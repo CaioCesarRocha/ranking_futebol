@@ -1,3 +1,15 @@
 <template>
-    <h1>Ta funfando? aee manoo</h1>
+<div>
+    <DrawerToolbar :routeName="$route.meta.title"/>
+</div>
 </template>
+
+<script>
+import DrawerToolbar from '../components/DrawerToolbar'
+
+export default {
+    components:{
+        DrawerToolbar,
+    }
+}
+</script>
