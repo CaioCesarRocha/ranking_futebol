@@ -3,7 +3,7 @@
         <v-app-bar app class="elevation-0 primary white--text">
             <v-app-bar-nav-icon dark class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-list-item-title class="routeTitle">{{routeName}}</v-list-item-title>
-            <v-list-item-title class="username hidden-xs-only">{{ currentUser }}</v-list-item-title>
+            <v-list-item-title class="username hidden-xs-only"></v-list-item-title>
             <v-menu
             transition="slide-y-transition"
             bottom
@@ -65,7 +65,7 @@
                 >
                     <v-list-item-content align="center">
                         <v-list-item-title class="title">
-                            App Usinas
+                            App Camp Futebol
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -93,7 +93,7 @@
             <div class="secondList">
             <v-list 
             rounded
-            v-if="isAdmin"
+            
             >
                 <v-list-item>
                     <v-list-item-content align="center" justify="center">
@@ -124,7 +124,7 @@
             <v-list 
             rounded
             class="mt-0 pt-0"
-            v-if="isSupplier"
+            
             >
                  <v-list-item
                     v-for="(itemSupplier, index) in itemsSupplier"
@@ -154,16 +154,16 @@ export default {
         drawer: false,
         homeLink: '/',
         items: [
-            { title: 'Consumo geral', icon: 'mdi-chart-donut' },
-            { title: 'Consumo por setor', icon: 'mdi-chart-line',link:'/consumoSetor' },
+            { title: 'Camp Abertos', icon: 'mdi-soccer' },
+            { title: 'Histórico dos Clubes', icon: 'mdi-chart-line',link:'/consumoSetor' },
             
         ],
         itemsAdmin: [
-            { title: 'Usuários', icon: 'mdi-account', link: '/users' },
-            { title: 'Setores', icon: 'mdi-view-dashboard', link: '/setores' },
+            { title: 'Clubes', icon: 'mdi-soccer-field', link: '/users' },
+            { title: 'Campeonatos', icon: 'mdi-clipboard-edit-outline', link: '/setores' },
         ],
         itemsSupplier: [
-            { title: 'Importar dados', icon: 'mdi-file-upload', link:'/import' },
+            { title: 'Usuários', icon: 'mdi-account', link:'/import' },
         ]
     }),
 
@@ -175,26 +175,6 @@ export default {
    },
 
    computed: {
-        currentUser() {
-            if(this.$store.state.auth.user != null)
-                return this.$store.state.auth.user.nome + ' ' + this.$store.state.auth.user.sobrenome
-            else
-                return null    
-        },
-
-        isAdmin() {
-            if(this.$store.state.auth.user != null)
-                return this.$store.state.auth.user.isAdmin
-            else
-                return null    
-        },
-
-        isSupplier() {
-            if(this.$store.state.auth.user != null)
-                return this.$store.state.auth.user.isSupplier
-            else
-                return null      
-        }
 
         
    },

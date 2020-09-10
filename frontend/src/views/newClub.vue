@@ -1,5 +1,6 @@
 <template>
     <div>
+        <DrawerToolbar :routeName="$route.meta.title"/>
         <container
             class="fill-height cinza mt-0" 
             fluid>
@@ -75,10 +76,11 @@
 
 <script>
 import {required, maxLength } from 'vuelidate/lib/validators'
+import DrawerToolbar from '../components/DrawerToolbar'
 
 export default {
     components:{
-
+        DrawerToolbar
     },
     data: () => ({
         items: ['Minas Gerais', 'São Paulo', 'Rio Grande do Sul', 'Rio de Janeiro'],
