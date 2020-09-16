@@ -1,6 +1,7 @@
 'use strict'
 
 const Clube = use("App/Models/Clube");
+const Database = use('Database')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -20,9 +21,58 @@ class ClubeController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    const clubes = await Clube.all();
+    const pagination = request.get()
+
+    let page = pagination.page || 1
+    let itemsPerPage = pagination.itemsPerPage || 10
     
-    return clubes;
+    if(typeof pagination.orderBy === 'undefined' || pagination.orderBy == 'null')
+        pagination.orderBy = 'nome'
+    
+    if(typeof pagination.sortDesc === 'undefined' || pagination.sortDesc == 'null' || pagination.sortDesc == 'false')
+       pagination.sortDesc = 'asc'   
+    else 
+       pagination.sortDesc = 'desc'    
+
+    try{
+      const clubes = await Database
+        .from('clubes')
+        .orderBy(pagination.orderBy, pagination.sortDesc)
+        .paginate(page, itemsPerPage)
+
+      return response.status(200).json(clubes)
+    }
+    catch(err){
+      return response.status(500).json({ message: 'Ocorreu um erro interno' })
+    }
+  }
+
+  async search ({ request, response }) {
+    const search = request.get()
+
+      let page = search.page || 1
+      let itemsPerPage = search.itemsPerPage || 10
+      
+      if(typeof search.orderBy === 'undefined' || search.orderBy == 'null')
+        search.orderBy = 'nome'
+      
+      if(typeof search.sortDesc === 'undefined' || search.sortDesc == 'null' || search.sortDesc == 'false')
+        search.sortDesc = 'asc'   
+      else 
+        search.sortDesc = 'desc'  
+          
+      try{
+          const clubes = await Database
+            .from('clubes')
+            .where('nome', 'ILIKE', '%'+search.term+'%')
+            .orderBy(search.orderBy, search.sortDesc)
+            .paginate(page, itemsPerPage)
+
+          return response.status(200).json(clubes)
+      }
+      catch(err){
+          return response.status(500).json({ message: 'Ocorreu um erro interno' })
+      }  
   }
 
   /**
@@ -48,9 +98,18 @@ class ClubeController {
   async store ({ request, response }) {
     const data = request.only(["nome", "estado","historico"]);
     
-    const clube = await Clube.create(data);
-    
-    return clube;
+    try
+    {
+      const clube = await Clube.create(data);
+      return clube;
+    }
+    catch(err){
+      if(err.constraint == 'clubes_nome_unique')
+      return response.status(409).json({ message: 'Este clube já existe'})
+    else
+      return response.status(500).json({ message: 'Ocorreu um erro interno' }) 
+    }
+
   }
 
   /**
@@ -63,6 +122,9 @@ class ClubeController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const clube = await Clube.findOrFail(params.id)
+
+    return clube
   }
 
   /**

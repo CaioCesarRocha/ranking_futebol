@@ -43,6 +43,7 @@
                                    </v-card-text>
 
                                    <v-select class="px-8 pl-5 py-0 pt-4"
+                                        v-model="clube.estado"
                                         :items="items"
                                         :menu-props="{ top: true, offsetY: true }"
                                         label="Estado"
@@ -51,9 +52,9 @@
                                     <v-card-text class="px-8 pl-5 py-0 pt-8"> 
                                         <v-text-field
                                             outlined
-                                            label="Títulos"
-                                            v-model="clube.titulos"
-                                            :error-messages="titulosErrors"
+                                            label="Historico do Clube"
+                                            v-model="clube.historico"
+                                            :error-messages="historicoErrors"
                                             name="titulos"
                                             type="text"
                                             class="mt-1"
@@ -71,12 +72,22 @@
             </v-row>
 
         </container>
+        <v-alert
+        :type="alertData.type"
+        v-model="alertData.show" 
+        class="importAlert elevation-11"
+        transition="slide-x-reverse-transition"
+        dismissible
+    >
+            {{alertData.message}}
+    </v-alert>   
     </div>
 </template>
 
 <script>
 import {required, maxLength } from 'vuelidate/lib/validators'
 import DrawerToolbar from '../components/DrawerToolbar'
+import Clubes from '../services/Clubes'
 
 export default {
     components:{
@@ -86,8 +97,16 @@ export default {
         items: ['Minas Gerais', 'São Paulo', 'Rio Grande do Sul', 'Rio de Janeiro'],
         clube:{
             nome: '',
-            titulos: '',
+            estado: '',
+            historico: '',
         },
+        show: false,
+        isLoading: false,
+        alertData: {
+            show: false,
+            message: '',
+            type: 'success'
+        } 
 
     }),
     
@@ -97,7 +116,7 @@ export default {
                 required,
                 maxLength:maxLength(150)
             },
-            titulos:{
+            historico:{
                 maxLength: maxLength(300)
             }
         }
@@ -107,17 +126,68 @@ export default {
         nomeErrors(){
             const errors = []
             if (!this.$v.clube.nome.$dirty) return errors
-            !this.$v.clube.nome.required && errors.push('Clube é obrigatório')
-            !this.$vclube.nome.maxLength && errors.push('O clube excedeu o limite de caracteres')          
+            !this.$v.clube.nome.required && errors.push('O nome do Clube é obrigatório')
+            !this.$v.clube.nome.maxLength && errors.push('O clube excedeu o limite de caracteres')          
             return errors
         },
-        titulosErrors(){
+        historicoErrors(){
             const errors = []
-            if (!this.$v.clube.titulos.$dirty) return errors
-            !this.$vclube.titulos.maxLength && errors.push('Os titulos do clube excederam o limite de caracteres')          
+            if (!this.$v.clube.historico.$dirty) return errors
+            !this.$v.clube.historico.maxLength && errors.push('O histórico do clube excedeu o limite de caracteres')          
             return errors
         }
+
     },
+    methods:{
+        async createClub(){
+            this.$v.$touch()
+
+            if(this.$v.$invalid) {
+                return 
+            }
+            else{
+                try{
+                    this.clube.nome = await this.upperString(this.clube.nome)
+
+                    const storedClube = await Clubes.store(this.clube)
+                    this.isLoading = false
+                    this.alertData.message ='O clube:' + storedClube.data.nome + ' foi criado(a) com sucesso'
+                    this.alertData.type = 'success'
+                    this.alertData.show = true
+                    
+                    this.clearForm()
+                    this.$router.replace("/Clubes");
+                }
+                catch(err){
+                    this.isLoading = false
+                    this.alertData.message = err.response.data.message
+                    this.alertData.type = 'error'
+                    this.alertData.show = true
+                }
+            }    
+        },
+        clearForm() {
+            this.clube = {
+                nome: '',
+                historico:'',
+            }
+
+            this.$v.$reset()
+        },
+        upperString(string) {
+            return string.toUpperCase()
+        },
+    }
+   
 
 }
 </script>
+
+<style>
+.importAlert{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+</style>
