@@ -1,7 +1,7 @@
 <template>
     <div>
         <DrawerToolbar :routeName="$route.meta.title"/>
-        <container
+        <v-container
             class="fill-height cinza mt-0" 
             fluid>
 
@@ -71,7 +71,7 @@
                 </v-col>
             </v-row>
 
-        </container>
+        </v-container>
         <v-alert
         :type="alertData.type"
         v-model="alertData.show" 

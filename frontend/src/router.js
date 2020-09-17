@@ -39,6 +39,14 @@ const router = new Router({
                 title: "Editar Clube",
             }
         },
+        {
+            path: '/ListClub',
+            name: 'ListClub',
+            component: () => import('./views/ListClub.vue'),
+            meta: {
+                title: "Clubes Criados",
+            }
+        }
     ]
 })
 

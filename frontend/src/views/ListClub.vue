@@ -64,8 +64,8 @@
                             item-key="nome"
                             @click:row="handleClickRow"                                                                   > 
 
-                            <template v-slot:item.estado="{ item }" >
-                                <v-layout justify-center>
+                            <template v-slot:item.estado="{ item }" item-key="estado"  >
+                                <v-layout justify-center v-model="item.estado">
                                     
                                 </v-layout>                       
                             </template>
@@ -110,6 +110,7 @@
 
 <script>
 import DrawerToolbar from '../components/DrawerToolbar'
+import Clubes from '../services/Clubes'
 
 export default {
      components: {
@@ -164,10 +165,11 @@ export default {
                     }
 
                     searchParams = Object.assign(searchParams, paginateParams)
-                    await this.$store.dispatch('clubes/search', searchParams)
-                }    
+                    //await this.$store.dispatch('clubes/search', searchParams)
+                    await Clubes.search(searchParams)
+                } 
                 else {
-                    await this.$store.dispatch('clubes/getClubes', paginateParams)
+                    await Clubes.index(paginateParams)
                 }
                 this.paginate.page = this.$store.state.clubes.pagination.page
                 this.paginate.itemsPerPage = this.$store.state.clubes.pagination.rowsPerPage

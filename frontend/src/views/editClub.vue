@@ -82,7 +82,7 @@
             >
                 {{alertData.message}}
         </v-alert>
-    <div>
+    </div>
 </template>
 
 
@@ -193,7 +193,7 @@ export default {
                 try {
                     this.clube.nome = await this.upperString(this.clube.nome)
                                                             
-                    await Clube.update(this.$route.params.id, this.clube)
+                    await Clubes.update(this.$route.params.id, this.clube)
                     this.isLoading = false
                     this.alertData.message = 'Clube editado com sucesso'
                     this.alertData.type = 'success'
