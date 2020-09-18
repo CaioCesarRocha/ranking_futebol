@@ -16,7 +16,10 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+Route.get('/clubes', 'ClubeController.index');
+Route.get('/clubes/search', 'ClubeController.search');
 Route.resource('clubes', 'ClubeController').apiOnly();
+
 
 
 

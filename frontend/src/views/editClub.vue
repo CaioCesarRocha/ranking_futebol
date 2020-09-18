@@ -153,7 +153,7 @@ export default {
             if(typeof this.$route.params.club == undefined || this.$route.params.club == null)
                 this.getClub()
             else{
-                this.setClub(this.$route.params.setor)
+                this.setClub(this.$route.params.club)
             }
 
         },

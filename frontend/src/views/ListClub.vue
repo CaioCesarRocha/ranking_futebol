@@ -50,7 +50,7 @@
                             :server-items-length="paginate.itemsLength"
                             :options.sync="paginate"                           
                             :headers="headers"                       
-                            :items="this.$store.state.clubes.clubesData"
+                            :items="this.clubesData"
                             :loading="isLoading"
                             :footer-props="{ 'items-per-page-options': [5,10,15,20] }"
                             @update:items-per-page="getItemsPerPage"
@@ -59,18 +59,19 @@
                             @update:sort-by="sortByFunc"
                             loading-text="Carregando clubes..."
                             no-data-text="Nenhum clube encontrado"
-                            class="elevation-1"        
+                            class="elevation-1"
+                            color="accent"        
                             locale="pt-BR"  
                             item-key="nome"
                             @click:row="handleClickRow"                                                                   > 
 
-                            <template v-slot:item.estado="{ item }" item-key="estado"  >
+                            <template v-slot:[`item.estado`]="{ item }" >
                                 <v-layout justify-center v-model="item.estado">
-                                    
+                                    {{item.estado}}
                                 </v-layout>                       
                             </template>
 
-                            <template v-slot:item.id="{ item }" >
+                            <template v-slot:[`item.id`]="{ item }" >
                                 <v-layout justify-end>
                                     <v-icon class="mr-0" color="grey darken-4" v-model="item.id" medium>
                                         mdi-playlist-edit
@@ -96,7 +97,7 @@
                         </v-row>
                     </v-alert>
                     <div class="mx-3 mt-3 ml-3 mb-3 md-6">  
-                        <v-btn class="md-6 px-4" color="success" @click="newClub"> 
+                        <v-btn class="md-6 px-4" color="accent" @click="newClub"> 
                             Novo Clube                         
                         <v-icon right medium>mdi-view-grid-plus</v-icon>
                         </v-btn>
@@ -118,6 +119,7 @@ export default {
     },
 
     data: () => ({
+        clubesData: [],
         searchBy: 'nome',
         searchText: '',
         isLoading: false,
@@ -166,25 +168,47 @@ export default {
 
                     searchParams = Object.assign(searchParams, paginateParams)
                     //await this.$store.dispatch('clubes/search', searchParams)
-                    await Clubes.search(searchParams)
+                   const page =  await Clubes.search(searchParams)
+                     
+                    //this.paginate.page = page.paginate.page
+                    //this.paginate.itemsPerPage = page.paginate.itemsPerPage
+                    //this.paginate.itemsLength = parseInt(page.total)
+
+                    this.setPage(page.data)                    
+                    //this.clubesData = page.data
                 } 
                 else {
-                    await Clubes.index(paginateParams)
+                    const page = await Clubes.index(paginateParams)
+                    //this.paginate.page = page.paginate.page
+                    //this.paginate.itemsPerPage = page.paginate.itemsPerPage
+                    //this.paginate.itemsLength = parseInt(page.total)
+
+                    this.setPage(page.data)                    
+                    //this.clubesData = page.data
                 }
-                this.paginate.page = this.$store.state.clubes.pagination.page
-                this.paginate.itemsPerPage = this.$store.state.clubes.pagination.rowsPerPage
-                this.paginate.itemsLength = this.$store.state.clubes.pagination.totalItems
+                //this.paginate.page = this.$store.state.clubes.pagination.page
+                //this.paginate.itemsPerPage = this.$store.state.clubes.pagination.rowsPerPage
+                //this.paginate.itemsLength = this.$store.state.clubes.pagination.totalItems
 
                 this.isLoading = false
                 this.error = false
            }
            catch(err){
                 this.isLoading = false
-                this.message = err.response.data.message
+                this.message = 'Não foi possível listar os clubes'
                 this.error = true
            }
            
        },
+
+        setPage(pageData){
+            this.paginate.page = pageData.page
+            this.paginate.itemsPerPage = pageData.PerPage
+            this.paginate.itemsLength = parseInt(pageData.total)
+            this.clubesData = pageData.data
+            
+        },
+
         getItemsPerPage(val) {
            this.paginate.itemsPerPage = val
            this.getClubes()
@@ -231,7 +255,7 @@ export default {
         },
 
         newClub(){
-            this.$router.push({ name: 'newClube' })
+            this.$router.push({ name: 'newClub' })
         },
         
         handleClickRow(val) {

@@ -156,7 +156,7 @@ export default {
                     this.alertData.show = true
                     
                     this.clearForm()
-                    this.$router.replace("/Clubes");
+                    this.$router.replace("/ListClub");
                 }
                 catch(err){
                     this.isLoading = false
