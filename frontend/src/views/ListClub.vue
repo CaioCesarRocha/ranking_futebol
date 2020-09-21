@@ -71,13 +71,13 @@
                                 </v-layout>                       
                             </template>
 
-                            <template v-slot:[`item.id`]="{ item }" >
+                             <template v-slot:[`item.id`]="{ item }" >
                                 <v-layout justify-end>
                                     <v-icon class="mr-0" color="grey darken-4" v-model="item.id" medium>
-                                        mdi-playlist-edit
+                                       mdi-shield-edit
                                     </v-icon>
                                 </v-layout>
-                            </template>                             
+                            </template>                           
                       
                         </v-data-table>
 
@@ -141,7 +141,10 @@ export default {
             {text: 'Nome',align: 'center',sortable: false,value:'nome', 
              class: "light-blue darked-1 white--text"              
             },
-            {text: 'Estado', value: 'estado', align:'center',class: "light-blue darked-1 white--text"},       
+            {text: 'Estado', value: 'estado', align:'center',class: "light-blue darked-1 white--text"
+            },    
+            {text: '', value: 'id', align:'center',class: "light-blue darked-1 white--text"
+            },    
         ],
     }),
     computed:{

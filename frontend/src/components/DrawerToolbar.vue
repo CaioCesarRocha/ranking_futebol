@@ -160,7 +160,7 @@ export default {
         ],
         itemsAdmin: [
             { title: 'Clubes', icon: 'mdi-soccer-field', link: '/ListClub' },
-            { title: 'Campeonatos', icon: 'mdi-clipboard-edit-outline', link: '/setores' },
+            { title: 'Campeonatos', icon: 'mdi-clipboard-edit-outline', link: '/ListLeague' },
         ],
         itemsSupplier: [
             { title: 'Usuários', icon: 'mdi-account', link:'/import' },

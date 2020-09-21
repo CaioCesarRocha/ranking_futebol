@@ -30,6 +30,7 @@
                                     </v-card-text>
 
                                     <v-select class="px-8 pl-5 py-0 pt-4"
+                                            v-model="clube.estado"
                                             :items="items"
                                             :menu-props="{ top: true, offsetY: true }"
                                             label="Estado"
@@ -40,8 +41,8 @@
                                             outlined
                                             label="Historico do Clube"
                                             v-model="clube.historico"
-                                            error-messages="historicoErrors"
-                                            name="titulos"
+                                            :error-messages="historicoErrors"
+                                            name="historico"
                                             type="text"
                                             class="mt-1"
                                         />
@@ -100,7 +101,8 @@ export default {
     },
 
     data:()=>({
-        items: ['Minas Gerais', 'São Paulo', 'Rio Grande do Sul', 'Rio de Janeiro'],
+        items: ['Alagoas','Bahia','Ceará','Distrito Federal','Goiás','Maranhão','Mato grosso','Minas Gerais','Paraná','Pernambuco','Santa Catarina', 'São Paulo', 'Rio Grande do Sul', 'Rio de Janeiro'
+               ],
         clube:{
             nome: '',
             estado: '',
