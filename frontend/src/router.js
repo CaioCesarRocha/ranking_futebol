@@ -52,7 +52,7 @@ const router = new Router({
             name: 'newLeague',
             component: () => import('./views/newLeague.vue'),
             meta: {
-                title: "Criar Novo Campeonato",
+                title: "Novo Campeonato",
             }
         }
     ]

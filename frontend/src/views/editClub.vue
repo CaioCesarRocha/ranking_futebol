@@ -22,7 +22,7 @@
                                             required
                                             label="Nome do Clube"
                                             v-model="clube.nome"
-                                            :error-messages="clubeErrors"
+                                            :error-messages="nomeErrors"
                                             name="name"
                                             type="text"
                                             class="mt-1"
