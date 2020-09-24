@@ -177,7 +177,8 @@ export default {
                     //this.paginate.itemsPerPage = page.paginate.itemsPerPage
                     //this.paginate.itemsLength = parseInt(page.total)
 
-                    this.setPage(page.data)                    
+                    this.setPage(page.data)
+                    console.log(page.data)                    
                     //this.clubesData = page.data
                 } 
                 else {
@@ -266,8 +267,7 @@ export default {
         }
     },
      mounted(){
-        this.getClubes()
-        
+        this.getClubes()       
     }
  }
 </script>

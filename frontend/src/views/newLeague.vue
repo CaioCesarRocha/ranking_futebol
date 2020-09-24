@@ -61,6 +61,8 @@
                                         ></v-radio>
                                    </v-radio-group>
 
+                                    <!--1 for PontosCorridos / 2 for Matamata / 3 for FaseDeGrupos -->
+
                                     <v-card-text 
                                     v-if="league.formato == 3 || 1 || 2" 
                                     class="mt-0 pt-0 py-0 pl-4"
@@ -137,8 +139,11 @@
 
                                    <v-select
                                         class="accent--text pr-10 pl-5 pt-3"
-                                        v-model="selectedClubes"
-                                        :items="clubes"
+                                        v-model="league.clubesSelecionados"
+                                        :items="clubesData"
+                                        item-text="nome"
+                                        item-value="id"                                        
+                                        no-data-text="Nenhum clube encontrado"                                      
                                         label="Selecione os clubes"
                                         multiple
                                     >
@@ -148,16 +153,16 @@
                                             @click="toggle"
                                         >
                                             <v-list-item-title 
-                                            v-if="selectedClubes.length <= league.numParticipantes" 
+                                            v-if="league.clubesSelecionados.length <= league.numParticipantes" 
                                             class="accent--text"
                                             >
-                                                Clubes Escolhidos: {{ selectedClubes.length }} / {{league.numParticipantes}}
+                                                Clubes Escolhidos: {{ league.clubesSelecionados.length }} / {{league.numParticipantes}}
                                             </v-list-item-title>
                                             <v-list-item-title 
                                             v-else
                                             class="red--text"
                                             >
-                                                Clubes Escolhidos: {{ selectedClubes.length }} / {{league.numParticipantes}}
+                                                Clubes Escolhidos: {{ league.clubeSelecionados.length }} / {{league.numParticipantes}}
                                             </v-list-item-title>
                                         </v-list-item>
                                     </template>
@@ -180,21 +185,22 @@
 <script>
 import {required, maxLength } from 'vuelidate/lib/validators'
 import DrawerToolbar from '../components/DrawerToolbar'
+import Clubes from '../services/Clubes'
 
 export default {
     components:{
         DrawerToolbar,
     },
-    data:()=>({     
+    data:()=>({
+        clubesData:[],
         league:{
             nome: '',
             formato: '1',
             numParticipantes:'20',
+            clubesSelecionados: [],
         },
-        clubes:[
-            'America', 'Galo', 'Cruzeiro', 'Abc', 'CRB','URT','CAP','Gremio','Inter'
-        ],
-        selectedClubes: [], 
+        message: '',     
+         
     }),
 
     validations:{
@@ -217,27 +223,43 @@ export default {
     },
 
     methods:{
+        async getClubes(){
+           try{               
+                const clube = await Clubes.selectedClubes()               
+               
+                this.setClubes(clube.data)   
+               
+            }
+
+           catch(err){
+                this.message = 'Não foi possível listar os clubes'
+                console.log(err)
+           }
+           
+       },
+
         async createLeague(){
             this.$v.$touch()
 
             if(this.$v.$invalid) {
                 return 
             }
-            else{
-                try{
-
-                }
-                catch(err){
-
-                }
-            }
+           
         },
+        
+        setClubes(clubeData){
+            this.clubesData = clubeData
+        },
+
 
         toggle () {
             this.$nextTick(() => {
-                this.selectedClubes = this.clubes.slice()             
+                this.clubesSelecionados = this.clubesData.slice()             
             })
         },
+    },
+    mounted(){
+        this.getClubes()       
     }
 }
 </script>

@@ -18,6 +18,7 @@ const Route = use('Route')
 
 Route.get('/clubes', 'ClubeController.index');
 Route.get('/clubes/search', 'ClubeController.search');
+Route.get('/clubes/selectedClubes', 'ClubeController.selectedClubes');
 Route.resource('clubes', 'ClubeController').apiOnly();
 
 

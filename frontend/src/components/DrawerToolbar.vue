@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-app-bar app class="elevation-0 primary white--text">
+        <v-app-bar app class="elevation-0 accent white--text">
             <v-app-bar-nav-icon dark class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-list-item-title class="routeTitle">{{routeName}}</v-list-item-title>
             <v-list-item-title class="username hidden-xs-only"></v-list-item-title>
@@ -11,7 +11,7 @@
                 <template v-slot:activator="{ on }">
                     <v-btn
                     small
-                    color="primary"
+                    color="accent"
                     slot="activator"
                     class="elevation-0  pa-0"
                     v-on="on"
@@ -21,7 +21,7 @@
                 </template>    
 
                 <v-list
-                class="primary dropDownMenu"
+                class="accent dropDownMenu"
                 flat
                 dark
                 >
@@ -57,7 +57,7 @@
         fixed 
         :permanent="!$vuetify.breakpoint.smAndDown"
         dark
-        class="primary white--text">
+        class="accent white--text">
             <v-list flat>
                 <v-list-item
                 link

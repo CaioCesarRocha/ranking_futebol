@@ -156,6 +156,28 @@ class ClubeController {
     
     return clube
   }
+  /**
+   * Selected clubes details.
+   * PUT or PATCH clubes
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+
+  async selectedClubes ({ request, response, view }) {
+
+    try{
+      const clubes = await Database
+      .from('clubes')
+      .orderBy('nome','asc')
+      return response.status(200).json(clubes)
+    }
+    catch(err){
+      return response.status(500).json({ message: 'Ocorreu um erro interno' }) 
+    }
+   
+  }
 
   /**
    * Delete a clube with id.
@@ -170,6 +192,8 @@ class ClubeController {
     
     await clube.delete();
   }
+
+
 }
 
 module.exports = ClubeController

@@ -9,9 +9,7 @@ export default{
             sortDesc: paginationParams.sortDesc
         }})
     },
-    store: (clube) => {
-        return api.post('clubes', clube)
-    },
+     
     update: (id, clube) => {
         return api.put(`clubes/${id}`, clube)
     },
@@ -28,4 +26,8 @@ export default{
             term: searchParams.searchText
         }})
     },
+
+    selectedClubes: () =>{
+        return api.get('clubes/selectedClubes')
+    }
 }
