@@ -165,7 +165,7 @@ class ClubeController {
    * @param {Response} ctx.response
    */
 
-  async selectedClubes ({ request, response, view }) {
+  async selectClubes ({ request, response, view }) {
 
     try{
       const clubes = await Database

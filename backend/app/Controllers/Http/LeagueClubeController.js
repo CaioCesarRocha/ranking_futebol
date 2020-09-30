@@ -1,19 +1,16 @@
 'use strict'
 
-const League = use("App/Models/League");
-const Database = use('Database')
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /**
- * Resourceful controller for interacting with leagues
+ * Resourceful controller for interacting with leagueclubes
  */
-class LeagueController {
+class LeagueClubeController {
   /**
-   * Show a list of all leagues.
-   * GET leagues
+   * Show a list of all leagueclubes.
+   * GET leagueclubes
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -24,8 +21,8 @@ class LeagueController {
   }
 
   /**
-   * Render a form to be used for creating a new league.
-   * GET leagues/create
+   * Render a form to be used for creating a new leagueclube.
+   * GET leagueclubes/create
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -36,33 +33,19 @@ class LeagueController {
   }
 
   /**
-   * Create/save a new league.
-   * POST leagues
+   * Create/save a new leagueclube.
+   * POST leagueclubes
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const { nome, formato, numParticipantes, selectedClubes} = await request.post();
-     
-    const league = await League.create({
-      nome,
-      formato,
-      numParticipantes,
-    });
-    
-    selectedClubes.forEach(async (selectedClubes) => {     
-        await league.clubes().attach([selectedClubes.id])                
-    });
-    
-    league.selectedClubes = await league.clubes().fetch();
-        
   }
 
   /**
-   * Display a single league.
-   * GET leagues/:id
+   * Display a single leagueclube.
+   * GET leagueclubes/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -73,8 +56,8 @@ class LeagueController {
   }
 
   /**
-   * Render a form to update an existing league.
-   * GET leagues/:id/edit
+   * Render a form to update an existing leagueclube.
+   * GET leagueclubes/:id/edit
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -85,8 +68,8 @@ class LeagueController {
   }
 
   /**
-   * Update league details.
-   * PUT or PATCH leagues/:id
+   * Update leagueclube details.
+   * PUT or PATCH leagueclubes/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -96,8 +79,8 @@ class LeagueController {
   }
 
   /**
-   * Delete a league with id.
-   * DELETE leagues/:id
+   * Delete a leagueclube with id.
+   * DELETE leagueclubes/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -107,4 +90,4 @@ class LeagueController {
   }
 }
 
-module.exports = LeagueController
+module.exports = LeagueClubeController

@@ -225,7 +225,7 @@ export default {
     methods:{
         async getClubes(){
            try{               
-                const clube = await Clubes.selectedClubes()               
+                const clube = await Clubes.selectClubes()               
                
                 this.setClubes(clube.data)   
                

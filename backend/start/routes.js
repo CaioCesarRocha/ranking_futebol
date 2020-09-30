@@ -17,8 +17,12 @@
 const Route = use('Route')
 
 Route.get('/clubes', 'ClubeController.index');
+Route.post('/clubes', 'ClubeController.store');
 Route.get('/clubes/search', 'ClubeController.search');
-Route.get('/clubes/selectedClubes', 'ClubeController.selectedClubes');
+Route.get('/clubes/selectClubes', 'ClubeController.selectClubes');
+
+
+Route.post('/leagues', 'LeagueController.store');
 Route.resource('clubes', 'ClubeController').apiOnly();
 
 
