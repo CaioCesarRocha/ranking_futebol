@@ -139,32 +139,36 @@
 
                                    <v-select
                                         class="accent--text pr-10 pl-5 pt-3"
-                                        v-model="league.clubesSelecionados"
+                                        v-model="league.selectedClubes"
                                         :items="clubesData"
                                         item-text="nome"
-                                        item-value="id"                                        
+                                        item-value="id"                                  
                                         no-data-text="Nenhum clube encontrado"                                      
                                         label="Selecione os clubes"
                                         multiple
+                                         
                                     >
                                     <template v-slot:prepend-item>
+                                       
                                         <v-list-item
                                             ripple
                                             @click="toggle"
                                         >
                                             <v-list-item-title 
-                                            v-if="league.clubesSelecionados.length <= league.numParticipantes" 
+                                            v-if="league.selectedClubes.length <= league.numParticipantes" 
                                             class="accent--text"
                                             >
-                                                Clubes Escolhidos: {{ league.clubesSelecionados.length }} / {{league.numParticipantes}}
+                                                Clubes Escolhidos: {{ league.selectedClubes.length }} / {{league.numParticipantes}}
                                             </v-list-item-title>
+                                            
                                             <v-list-item-title 
                                             v-else
                                             class="red--text"
                                             >
-                                                Clubes Escolhidos: {{ league.clubeSelecionados.length }} / {{league.numParticipantes}}
-                                            </v-list-item-title>
+                                                Clubes Escolhidos: {{ league.selectedClubes.length }} / {{league.numParticipantes}}
+                                            </v-list-item-title>                                           
                                         </v-list-item>
+                                        <v-divider class="mt-2"></v-divider>
                                     </template>
 
                                     </v-select>
@@ -179,6 +183,15 @@
                 </v-col>
             </v-row>            
         </v-container>
+        <v-alert
+        :type="alertData.type"
+        v-model="alertData.show" 
+        class="importAlert elevation-11"
+        transition="slide-x-reverse-transition"
+        dismissible
+        >
+            {{alertData.message}}
+        </v-alert>  
     </div>
 </template>
 
@@ -186,6 +199,7 @@
 import {required, maxLength } from 'vuelidate/lib/validators'
 import DrawerToolbar from '../components/DrawerToolbar'
 import Clubes from '../services/Clubes'
+import Leagues from '../services/Leagues'
 
 export default {
     components:{
@@ -197,10 +211,14 @@ export default {
             nome: '',
             formato: '1',
             numParticipantes:'20',
-            clubesSelecionados: [],
+            selectedClubes: [],
         },
-        message: '',     
-         
+        show: false,
+        alertData: {
+            show: false,
+            message: '',
+            type: 'success'
+        }         
     }),
 
     validations:{
@@ -225,15 +243,13 @@ export default {
     methods:{
         async getClubes(){
            try{               
-                const clube = await Clubes.selectClubes()               
-               
-                this.setClubes(clube.data)   
-               
+                const clube = await Clubes.selectClubes()                            
+                this.setClubes(clube.data)               
             }
-
            catch(err){
                 this.message = 'Não foi possível listar os clubes'
-                console.log(err)
+                this.alertData.type = 'error'
+                this.alertData.show = true
            }
            
        },
@@ -244,20 +260,81 @@ export default {
             if(this.$v.$invalid) {
                 return 
             }
+            else{
+                try{
+  
+                   //for(var i=0;i<this.selectedClubes.length;i++){
+                        //this.league.selectedClubes[i] = new Object({ id: this.selectedClubes[i] })
+                    //}    
+
+                    //console.log(this.league.selectedClubes)
+                    this.league.nome = await this.upperString(this.league.nome)
+                    //this.league.formato = await this.formatoString(this.league.formato)
+
+                    const storedLeague = await Leagues.store(this.league)
+                    //this.isLoading = false
+                    
+                    this.alertData.message ='A liga:' + storedLeague.data.nome + ' foi criado(a) com sucesso'
+                    this.alertData.type = 'success'
+                    this.alertData.show = true
+                    
+                    //this.clearForm()
+                    //this.$router.replace("/ListLeague");
+                }
+                catch(err){
+                    this.isLoading = false
+                    this.alertData.message = 'Liga não pode ser criada'
+                    this.alertData.type = 'error'
+                    this.alertData.show = true
+                }
+            }  
            
         },
         
+
+
         setClubes(clubeData){
             this.clubesData = clubeData
         },
 
+         clearForm() {
+            this.league = {
+                nome: '',
+                formato:'1',
+                numParticipantes: '20',
+                selectedClubes: [],
+            }
+            this.$v.$reset()
+        },
+
+        upperString(string) {
+            return string.toUpperCase()
+        },
+
+        formatoString(league){
+            if(league.formato == 1){
+                return league.formato = "Pontos Corridos"
+            }
+            else if(league.formato == 2){
+                return league.formato = "Mata Mata"
+            }
+            else{
+                return league.formato = "Fase de Grupos"
+            }
+        },
 
         toggle () {
+            
             this.$nextTick(() => {
-                this.clubesSelecionados = this.clubesData.slice()             
+               //console.log(this.league.selectedClubes) 
+               // var clubesSelecionados = [];
+                this.league.selectedClubes = this.clubesData.slice()
+                         
             })
         },
     },
+
+
     mounted(){
         this.getClubes()       
     }

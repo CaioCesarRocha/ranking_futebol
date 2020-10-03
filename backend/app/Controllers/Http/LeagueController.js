@@ -51,13 +51,15 @@ class LeagueController {
       formato,
       numParticipantes,
     });
+   
     
     selectedClubes.forEach(async (selectedClubes) => {     
-        await league.clubes().attach([selectedClubes.id])                
+        await league.clubes().attach([selectedClubes])                
     });
     
     league.selectedClubes = await league.clubes().fetch();
-        
+
+    return league
   }
 
   /**

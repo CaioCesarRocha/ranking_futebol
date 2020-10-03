@@ -78,9 +78,9 @@
         class="importAlert elevation-11"
         transition="slide-x-reverse-transition"
         dismissible
-    >
+        >
             {{alertData.message}}
-    </v-alert>   
+        </v-alert>   
     </div>
 </template>
 
@@ -94,7 +94,7 @@ export default {
         DrawerToolbar
     },
     data: () => ({
-        items: ['Alagoas','Bahia','Ceará','Distrito Federal','Goias','Maranhão','Mato grosso','Minas Gerais','Paraná','Pernambuco','Santa Catarina', 'São Paulo', 'Rio Grande do Sul', 'Rio de Janeiro'
+        items: ['Alagoas','Bahia','Ceará','Distrito Federal','Goias','Maranhão','Mato grosso','Minas Gerais', 'Pará','Paraná','Pernambuco','Santa Catarina', 'São Paulo', 'Rio Grande do Sul', 'Rio de Janeiro'
                ],
         clube:{
             nome: '',
