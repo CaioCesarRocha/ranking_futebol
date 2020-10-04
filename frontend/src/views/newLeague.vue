@@ -95,6 +95,16 @@
                                     row
                                     >
                                         <v-radio                                        
+                                        label="4 clubes"
+                                        value="4"
+                                        ></v-radio>
+
+                                        <v-radio                                        
+                                        label="8 clubes"
+                                        value="8"
+                                        ></v-radio>
+
+                                        <v-radio                                        
                                         label="16 clubes"
                                         value="16"
                                         ></v-radio>
@@ -120,7 +130,8 @@
                                     v-model="league.numParticipantes" 
                                     class="mt-0 py-0 pt-0 pl-5" 
                                     row
-                                    >
+                                    >                                       
+
                                         <v-radio                                        
                                         label="8 clubes"
                                         value="8"
@@ -138,43 +149,67 @@
                                    </v-radio-group>
 
                                    <v-select
-                                        class="accent--text pr-10 pl-5 pt-3"
+                                        class="accent--text pr-10 pl-5 pt-3 py-0 my-0"
                                         v-model="league.selectedClubes"
                                         :items="clubesData"
                                         item-text="nome"
                                         item-value="id"                                  
                                         no-data-text="Nenhum clube encontrado"                                      
                                         label="Selecione os clubes"
-                                        multiple
-                                         
+                                        multiple                                        
                                     >
-                                    <template v-slot:prepend-item>
-                                       
+
+                                    <template v-slot:prepend-item>                                      
                                         <v-list-item
                                             ripple
                                             @click="toggle"
                                         >
-                                            <v-list-item-title 
-                                            v-if="league.selectedClubes.length <= league.numParticipantes" 
-                                            class="accent--text"
-                                            >
-                                                Clubes Escolhidos: {{ league.selectedClubes.length }} / {{league.numParticipantes}}
-                                            </v-list-item-title>
-                                            
-                                            <v-list-item-title 
-                                            v-else
-                                            class="red--text"
-                                            >
-                                                Clubes Escolhidos: {{ league.selectedClubes.length }} / {{league.numParticipantes}}
-                                            </v-list-item-title>                                           
+                                            <v-list-item-action>
+              <v-icon :color="league.selectedClubes.length > 0 ? 'indigo darken-4' : ''">
+                {{ icon }}
+              </v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                Selecionar todos os clubes
+              </v-list-item-title>
+            </v-list-item-content>
+
                                         </v-list-item>
                                         <v-divider class="mt-2"></v-divider>
                                     </template>
-
                                     </v-select>
 
+                                    <v-layout 
+                                    justify-start
+                                    v-if="league.selectedClubes.length == league.numParticipantes && league.selectedClubes.length > 0"
+                                    class="ml-5 mt-0"
+                                    >
+                                        <v-icon class="mr-0" color="green" medium>
+                                            mdi-checkbox-marked-circle-outline
+                                        </v-icon>
+                                        <v-card-subtitle                                            
+                                        class="mt-0 green--text font-weight-bold"
+                                        >
+                                            Clubes Selecionados: {{ league.selectedClubes.length }} / {{league.numParticipantes}}
+                                        </v-card-subtitle>
+                                    </v-layout>
+                                    
+                                    <v-layout
+                                    v-else-if="league.selectedClubes.length != league.numParticipantes && league.selectedClubes.length > 0"
+                                    class="ml-5 mt-0">
+                                        <v-icon class="mr-0" color="red" medium>
+                                            mdi-alert-circle-outline
+                                        </v-icon>
+                                        <v-card-subtitle 
+                                        class="mt-0 red--text font-weight-bold"
+                                        >
+                                            O Número de clubes selecionados deve ser igual ao número de participantes: {{ league.selectedClubes.length }} / {{league.numParticipantes}}
+                                        </v-card-subtitle>
+                                    </v-layout>
+
                                     <v-card-actions class=" mt-0 justify-center text-center">
-                                        <v-btn type="submit" class="px-3 mt-5" color="accent">Criar Liga</v-btn>
+                                        <v-btn type="submit" class="px-3 mt-3" color="accent">Criar Liga</v-btn>
                                     </v-card-actions>
 
                                 </v-container>
@@ -238,6 +273,17 @@ export default {
             !this.$v.league.nome.maxLength && errors.push('O clube excedeu o limite de caracteres')          
             return errors
         },
+        AllClubesSelect () {
+            return this.league.selectedClubes.length === this.clubesData.length
+        },
+        SomeClubesSelect () {
+            return this.league.selectedClubes.length > 0 && !this.clubesData.length
+        },
+        icon () {
+            if (this.AllClubesSelect) return 'mdi-close-box'
+            if (this.SomeClubesSelect) return 'mdi-minus-box'
+            return 'mdi-checkbox-blank-outline'
+        },
     },
 
     methods:{
@@ -260,16 +306,12 @@ export default {
             if(this.$v.$invalid) {
                 return 
             }
-            else{
-                try{
-  
-                   //for(var i=0;i<this.selectedClubes.length;i++){
-                        //this.league.selectedClubes[i] = new Object({ id: this.selectedClubes[i] })
-                    //}    
+            else if(this.league.selectedClubes.length == this.league.numParticipantes){
 
-                    //console.log(this.league.selectedClubes)
+                try{                    
+                    
                     this.league.nome = await this.upperString(this.league.nome)
-                    //this.league.formato = await this.formatoString(this.league.formato)
+                    this.league.formato = await this.formatoNome(this.league.formato)
 
                     const storedLeague = await Leagues.store(this.league)
                     //this.isLoading = false
@@ -278,8 +320,8 @@ export default {
                     this.alertData.type = 'success'
                     this.alertData.show = true
                     
-                    //this.clearForm()
-                    //this.$router.replace("/ListLeague");
+                    this.clearForm()
+                    this.$router.replace("/ListLeague");
                 }
                 catch(err){
                     this.isLoading = false
@@ -287,6 +329,11 @@ export default {
                     this.alertData.type = 'error'
                     this.alertData.show = true
                 }
+            }
+            else{
+                    this.alertData.message = 'O número de clubes selecionados deve ser igual ao número de participantes!'
+                    this.alertData.type = 'error'
+                    this.alertData.show = true
             }  
            
         },
@@ -311,25 +358,26 @@ export default {
             return string.toUpperCase()
         },
 
-        formatoString(league){
+        formatoNome(league){
             if(league.formato == 1){
-                return league.formato = "Pontos Corridos"
+               return this.league.formato ='Pontos Corridos'
             }
             else if(league.formato == 2){
-                return league.formato = "Mata Mata"
+                return this.league.formato = 'Mata Mata'
             }
             else{
-                return league.formato = "Fase de Grupos"
+                return this.league.formato='Fase de Grupos'
             }
         },
 
-        toggle () {
-            
+        toggle () {           
             this.$nextTick(() => {
-               //console.log(this.league.selectedClubes) 
-               // var clubesSelecionados = [];
-                this.league.selectedClubes = this.clubesData.slice()
-                         
+               //console.log(this.league.selectedClubes)              
+                if (this.AllClubesSelect) {
+                    this.league.selectedClubes = []
+                } else {
+                    this.league.selectedClubes = this.clubesData.slice() 
+                }                                       
             })
         },
     },

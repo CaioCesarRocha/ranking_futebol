@@ -54,7 +54,15 @@ const router = new Router({
             meta: {
                 title: "Novo Campeonato",
             }
-        }
+        },
+        {
+            path: '/ListLeague',
+            name: 'ListLeague',
+            component: () => import('./views/ListLeague.vue'),
+            meta: {
+                title: "Ligas Criadas",
+            }
+        },
     ]
 })
 
