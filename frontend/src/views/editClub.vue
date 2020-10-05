@@ -146,10 +146,6 @@ export default {
         }
     },
 
-    mounted(){
-        this.checkClubParams()       
-    },
-
     methods:{
         checkClubParams() {
             if(typeof this.$route.params.club == undefined || this.$route.params.club == null)
@@ -224,11 +220,13 @@ export default {
         tryAgain(){
             this.error = false
             this.getClub()
-        },
+        },      
+    },
 
-    }
+    mounted(){
+        this.checkClubParams()       
+    },
 
-    
 
 }
 </script>

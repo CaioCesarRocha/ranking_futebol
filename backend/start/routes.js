@@ -21,9 +21,13 @@ Route.post('/clubes', 'ClubeController.store');
 Route.get('/clubes/search', 'ClubeController.search');
 Route.get('/clubes/selectClubes', 'ClubeController.selectClubes');
 
-
+Route.get('/leagues', 'LeagueController.index');
 Route.post('/leagues', 'LeagueController.store');
+Route.get('/leagues/search', 'LeagueController.search');
+
+
 Route.resource('clubes', 'ClubeController').apiOnly();
+Route.resource('leagues', 'LeagueController').apiOnly();
 
 
 

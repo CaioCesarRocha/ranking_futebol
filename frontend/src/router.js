@@ -63,6 +63,15 @@ const router = new Router({
                 title: "Ligas Criadas",
             }
         },
+        {
+            path: '/editLeague',
+            name: 'editLeague',
+            component: () => import('./views/editLeague.vue'),
+            meta: {
+                title: "Clubes Inseridos",
+            }
+        },
+
     ]
 })
 

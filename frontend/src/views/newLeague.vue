@@ -165,15 +165,16 @@
                                             @click="toggle"
                                         >
                                             <v-list-item-action>
-              <v-icon :color="league.selectedClubes.length > 0 ? 'indigo darken-4' : ''">
-                {{ icon }}
-              </v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>
-                Selecionar todos os clubes
-              </v-list-item-title>
-            </v-list-item-content>
+                                            <v-icon 
+                                            :color="league.selectedClubes.length > 0 ? 'indigo darken-4' : ''">
+                                                {{ icon }}
+                                            </v-icon>
+                                            </v-list-item-action>
+                                            <v-list-item-content>
+                                            <v-list-item-title>
+                                                Selecionar todos os clubes
+                                            </v-list-item-title>
+                                            </v-list-item-content>
 
                                         </v-list-item>
                                         <v-divider class="mt-2"></v-divider>

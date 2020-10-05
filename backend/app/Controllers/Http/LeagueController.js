@@ -21,7 +21,61 @@ class LeagueController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    const pagination = request.get()
+
+    let page = pagination.page || 1
+    let itemsPerPage = pagination.itemsPerPage || 10
+    
+    if(typeof pagination.orderBy === 'undefined' || pagination.orderBy == 'null')
+        pagination.orderBy = 'nome'
+    
+    if(typeof pagination.sortDesc === 'undefined' || pagination.sortDesc == 'null' || pagination.sortDesc == 'false')
+       pagination.sortDesc = 'asc'   
+    else 
+       pagination.sortDesc = 'desc'    
+
+    try{
+      const leagues = await Database
+        .from('leagues')
+        .orderBy(pagination.orderBy, pagination.sortDesc)
+        .paginate(page, itemsPerPage)
+
+      return response.status(200).json(leagues)
+    }
+    catch(err){
+      return response.status(500).json({ message: 'Ocorreu um erro interno' })
+    }
   }
+
+  
+  async search ({ request, response }) {
+    const search = request.get()
+
+      let page = search.page || 1
+      let itemsPerPage = search.itemsPerPage || 10
+      
+      if(typeof search.orderBy === 'undefined' || search.orderBy == 'null')
+        search.orderBy = 'nome'
+      
+      if(typeof search.sortDesc === 'undefined' || search.sortDesc == 'null' || search.sortDesc == 'false')
+        search.sortDesc = 'asc'   
+      else 
+        search.sortDesc = 'desc'  
+          
+      try{
+          const leagues = await Database
+            .from('leagues')
+            .where('nome', 'ILIKE', '%'+search.term+'%')
+            .orderBy(search.orderBy, search.sortDesc)
+            .paginate(page, itemsPerPage)
+
+          return response.status(200).json(leagues)
+      }
+      catch(err){
+          return response.status(500).json({ message: 'Ocorreu um erro interno' })
+      }  
+  }
+
 
   /**
    * Render a form to be used for creating a new league.
@@ -58,7 +112,6 @@ class LeagueController {
     });
     
     league.selectedClubes = await league.clubes().fetch();
-
     return league
   }
 
@@ -72,6 +125,9 @@ class LeagueController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const league = await League.findOrFail(params.id)
+
+    return league
   }
 
   /**
