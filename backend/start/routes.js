@@ -20,14 +20,20 @@ Route.get('/clubes', 'ClubeController.index');
 Route.post('/clubes', 'ClubeController.store');
 Route.get('/clubes/search', 'ClubeController.search');
 Route.get('/clubes/selectClubes', 'ClubeController.selectClubes');
+Route.get('/clubes/:id', 'ClubeController.show');
 
 Route.get('/leagues', 'LeagueController.index');
 Route.post('/leagues', 'LeagueController.store');
 Route.get('/leagues/search', 'LeagueController.search');
+Route.get('/leagues/:id', 'LeagueController.show');
+
+Route.get('/leagueClubes/:id', 'LeagueClubeController.show');
 
 
-Route.resource('clubes', 'ClubeController').apiOnly();
-Route.resource('leagues', 'LeagueController').apiOnly();
+
+//Route.resource('leagueClubes', 'LeagueClubeController').apiOnly();
+//Route.resource('clubes', 'ClubeController').apiOnly();
+//Route.resource('leagues', 'LeagueController').apiOnly();
 
 
 

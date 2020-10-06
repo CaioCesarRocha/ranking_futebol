@@ -1,5 +1,8 @@
 'use strict'
 
+const LeagueClube = use("App/Models/LeagueClube");
+const Database = use('Database')
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -53,7 +56,15 @@ class LeagueClubeController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+
+    const nomeClubes = await Database
     
+    .raw(`select c.nome 
+    from clubes as c 
+    inner join league_clube as lc 
+    on lc.clube_id = c.id
+    where lc.league_id = ${params.id} `)
+    return nomeClubes.rows
   }
 
   /**

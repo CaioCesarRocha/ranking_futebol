@@ -37,11 +37,11 @@
                                         class="mt-1"
                                         />
                                     </v-card-text>
-                                    <v-card-text class="mt-0 pt-0 py-0 pl-4">
+                                    <v-card-text class="mt-0 pt-0 px-0 py-0 pl-4">
                                         <v-card-subtitle class="accent--text title pl-2">
                                             Formato da Competição: 
                                         </v-card-subtitle>
-                                        <p class="success--text font-weight-bold ml-2">-> {{league.formato}}</p>
+                                        <p class="success--text font-weight-bold ml-2">->   {{league.formato}}</p>
                                             
                                                                                 
                                     </v-card-text>                                  
@@ -49,22 +49,16 @@
                                     <!--1 for PontosCorridos / 2 for Matamata / 3 for FaseDeGrupos -->                                    
                                    <v-select
                                         class="accent--text pr-10 pl-5 pt-3 py-0 my-0 mt-5"
-                                        v-model="league.selectedClubes"
+                                        v-model="clubesData"
                                         :items="clubesData"
+                                        attach
+                                        chips
                                         item-text="nome"
                                         item-value="id"                                  
                                         no-data-text="Nenhum clube encontrado"                                      
-                                        label="Selecione os clubes"
+                                        label="Clubes Participantes:"                                       
                                         multiple                                        
-                                    >
-
-                                    <template v-slot:prepend-item>                                      
-                                        <v-list-item
-                                            ripple                                          
-                                        >
-                                        </v-list-item>
-                                       
-                                    </template>
+                                    >                                  
                                     </v-select>
                                   
                                     <v-card-actions class=" mt-0 justify-center text-center">
@@ -84,6 +78,7 @@
 <script>
 import DrawerToolbar from '../components/DrawerToolbar'
 import Leagues from '../services/Leagues'
+import LeagueClubes from '../services/LeagueClubes'
 
 export default {
     components:{
@@ -109,7 +104,23 @@ export default {
             }
         },
 
-          async getLeague() {
+        async getClubes(){
+            try{
+                const leagueClubes = await LeagueClubes.show(this.$route.params.id)
+                console.log(this.$route.params.id)
+                console.log(this.leagueClubes)
+                this.clubesData = leagueClubes.data
+                console.log(this.clubesData)  
+            }
+            catch(err){
+                 if(err.response.status == 404)
+                    this.errorMessage = 'Clubes não encontrados'
+                else
+                    this.errorMessage = 'Houve um problema ao carregar os clubes desta liga' 
+            }                                                 
+        },
+
+        async getLeague() {
             //this.gettingClub = true
             try{
                     const league = await Leagues.show(this.$route.params.id)
@@ -126,15 +137,19 @@ export default {
                 }
         },
 
-         setLeague(leagueData){
+        setLeague(leagueData){
             this.league.nome = leagueData.nome;
             this.league.formato = leagueData.formato;
             this.league.numParticipantes = leagueData.numParticipantes;
+            //const leagueClube = await LeagueClubes.show(this.$route.params.id)
+            //this.clubesData = leagueClube
         },
+
     },
 
     mounted(){
         this.checkLeagueParams()
+        this.getClubes()
     }
 }
 </script>
