@@ -7,8 +7,8 @@ class LeagueClubeSchema extends Schema {
   up () {
     this.create('league_clube', (table) => {
       table.increments()
-      table.integer('league_id').references('id').inTable('leagues').onUpdate('CASCADE')
-      table.integer('clube_id').references('id').inTable('clubes').onUpdate('CASCADE')
+      table.integer('league_id').references('id').inTable('leagues').onUpdate('CASCADE').onDelete('CASCADE')
+      table.integer('clube_id').references('id').inTable('clubes').onUpdate('CASCADE').onDelete('CASCADE')
       table.timestamps()
     })
   }

@@ -21,13 +21,16 @@ Route.post('/clubes', 'ClubeController.store');
 Route.get('/clubes/search', 'ClubeController.search');
 Route.get('/clubes/selectClubes', 'ClubeController.selectClubes');
 Route.get('/clubes/:id', 'ClubeController.show');
+Route.put('/clubes/:id', 'ClubeController.update')
 
 Route.get('/leagues', 'LeagueController.index');
 Route.post('/leagues', 'LeagueController.store');
 Route.get('/leagues/search', 'LeagueController.search');
 Route.get('/leagues/:id', 'LeagueController.show');
+Route.delete('/leagues/:id', 'LeagueController.destroy')
 
 Route.get('/leagueClubes/:id', 'LeagueClubeController.show');
+
 
 
 

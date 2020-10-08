@@ -162,6 +162,12 @@ class LeagueController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    
+    const deleteLeague = await Database
+    
+    .raw(`delete from leagues as l
+    where l.id = ${params.id}`)
+    return deleteLeague.rows   
   }
 }
 

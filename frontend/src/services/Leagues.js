@@ -28,4 +28,8 @@ export default{
     store: (league) => {     //-> passar as info do formulario e salvar no banco
         return api.post('leagues', league)
     },
+
+    delete: (id) => {
+        return api.delete(`leagues/${id}`)
+    }
 }

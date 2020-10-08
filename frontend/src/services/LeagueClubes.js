@@ -4,5 +4,7 @@ export default {
   
     show: (id) => {
         return api.get(`leagueClubes/${id}`)
-    }
+    },
+
+    
 }

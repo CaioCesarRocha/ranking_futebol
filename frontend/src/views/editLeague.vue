@@ -45,8 +45,7 @@
                                             
                                                                                 
                                     </v-card-text>                                  
-
-                                    <!--1 for PontosCorridos / 2 for Matamata / 3 for FaseDeGrupos -->                                    
+                               
                                    <v-select
                                         class="accent--text pr-10 pl-5 pt-3 py-0 my-0 mt-5"
                                         v-model="clubesData"
@@ -71,6 +70,25 @@
                 </v-col>
             </v-row>            
         </v-container>
+        <v-alert
+            :type="alertData.type"
+            v-model="alertData.show" 
+            class="importAlert elevation-11"
+            transition="slide-x-reverse-transition"
+            dismissible
+            >
+                {{alertData.message}}
+        </v-alert>
+        <v-alert
+            :type="alertDelete.type"
+            v-model="alertDelete.show" 
+            class="importAlert elevation-11"
+            transition="slide-x-reverse-transition"
+            dismissible
+            >
+                {{alertDelete.message}}
+            <v-btn @click="Deletar" type="submit" class="px-3 mt0" color="info"> OK</v-btn>
+        </v-alert>
     </div>
 </template>
 
@@ -92,7 +110,18 @@ export default {
             formato: '',
             numParticipantes: '',
             selectedClubes:[]
-        }
+        },
+        errorMessage: '',
+        alertData: {
+            show: false,
+            message: '',
+            type: 'success'
+        },
+         alertDelete: {
+            show: false,
+            message: '',
+            type: 'warning'
+        },
     }),
 
     methods:{
@@ -107,10 +136,9 @@ export default {
         async getClubes(){
             try{
                 const leagueClubes = await LeagueClubes.show(this.$route.params.id)
-                console.log(this.$route.params.id)
-                console.log(this.leagueClubes)
+                //console.log(this.$route.params.id)
+                //console.log(this.leagueClubes)
                 this.clubesData = leagueClubes.data
-                console.log(this.clubesData)  
             }
             catch(err){
                  if(err.response.status == 404)
@@ -137,12 +165,31 @@ export default {
                 }
         },
 
+        async deleteLeague(){
+            this.alertDelete.show = true
+            this.alertDelete.message = 'Você tem certeza que deseja excluir esta liga?'           
+        },
+
+        async Deletar(){
+            try{
+                await Leagues.delete(this.$route.params.id)
+                this.alertDelete.show = false
+                this.alertData.message = 'A liga:' + this.league.nome + ' foi deletada com sucesso.'
+                this.alertData.type = 'success'
+                this.alertData.show = true
+            }
+            catch(err){
+                this.alertDelete.show = false
+                this.alertData.message = 'A liga: ' + this.league.nome + ' não pode ser deletada.'
+                this.alertData.type = 'alert'
+                this.alertData.show = true
+            }
+        },
+
         setLeague(leagueData){
             this.league.nome = leagueData.nome;
             this.league.formato = leagueData.formato;
             this.league.numParticipantes = leagueData.numParticipantes;
-            //const leagueClube = await LeagueClubes.show(this.$route.params.id)
-            //this.clubesData = leagueClube
         },
 
     },

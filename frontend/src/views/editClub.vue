@@ -7,7 +7,7 @@
             fluid>
             <v-row v-show="!gettingClub&&!errorGettingClub">
                 <v-col>
-                    <v-form @submit.prevent="createClub">
+                    <v-form @submit.prevent="editClub">
                             <v-card class="elevation-12 pb-4 mt-0">
                                 <v-container fluid class="mt-3 my-2">
                                     <v-card-subtitle class="ma-0 ml-3 pa-0 mt-5 title font-weight-bold primary--text">
@@ -180,7 +180,7 @@ export default {
             this.clube.historico = clubeData.historico;
         },
 
-        async createClub(){
+        async editClub(){
             this.isLoading = true
             this.$v.$touch()
             
