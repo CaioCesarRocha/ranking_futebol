@@ -108,7 +108,16 @@ class LeagueController {
    
     
     selectedClubes.forEach(async (selectedClubes) => {     
-        await league.clubes().attach([selectedClubes])                
+        await league.clubes().attach([selectedClubes], row =>{
+          row.pontos = 0
+          row.jogos = 0
+          row.vitorias = 0
+          row.empates = 0
+          row.derrotas = 0
+          row.golsFeitos = 0
+          row.golsSofridos = 0
+          row.saldoGols = 0
+        })                
     });
     
     league.selectedClubes = await league.clubes().fetch();

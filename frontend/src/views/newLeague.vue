@@ -247,7 +247,7 @@ export default {
             nome: '',
             formato: '1',
             numParticipantes:'20',
-            selectedClubes: [],
+            selectedClubes: []
         },
         show: false,
         alertData: {
@@ -290,7 +290,7 @@ export default {
     methods:{
         async getClubes(){
            try{               
-                const clube = await Clubes.selectClubes()                            
+                const clube = await Clubes.selectClubes()//pegando os clubes p/ selecionar                           
                 this.setClubes(clube.data)               
             }
            catch(err){

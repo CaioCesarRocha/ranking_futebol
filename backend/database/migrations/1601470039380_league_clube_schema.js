@@ -9,7 +9,14 @@ class LeagueClubeSchema extends Schema {
       table.increments()
       table.integer('league_id').references('id').inTable('leagues').onUpdate('CASCADE').onDelete('CASCADE')
       table.integer('clube_id').references('id').inTable('clubes').onUpdate('CASCADE').onDelete('CASCADE')
-      table.timestamps()
+      table.integer('pontos')
+      table.integer('jogos')
+      table.integer('vitorias')
+      table.integer('empates')
+      table.integer('derrotas')
+      table.integer('golsFeitos')
+      table.integer('golsSofridos')
+      table.integer('saldoGols')
     })
   }
   down () {
