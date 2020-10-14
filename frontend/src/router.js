@@ -71,6 +71,23 @@ const router = new Router({
                 title: "Clubes Inseridos",
             }
         },
+        {
+            path: '/newRound',
+            name: 'newRound',
+            component: () => import('./views/newRound.vue'),
+            meta: {
+                title: "Nova Rodada",
+            }
+        },
+        {
+            path: '/ListRounds',
+            name: 'ListRounds',
+            component: () => import('./views/ListRounds.vue'),
+            meta: {
+                title: "Rodadas",
+            }
+        },
+
 
     ]
 })

@@ -59,10 +59,28 @@
                                         multiple                                        
                                     >                                  
                                     </v-select>
-                                  
-                                    <v-card-actions class=" mt-0 justify-center text-center">
-                                        <v-btn type="submit" class="px-3 mt-3" color="warning">Deletar Liga</v-btn>
-                                    </v-card-actions>
+                                    <v-row
+                                    align="center"
+                                    justify="center"
+                                    >
+                                        <v-col
+                                        cols="4">
+                                            <v-card-actions 
+                                            @click="GerenciarRodadas" 
+                                            class=" mt-0 justify-center text-center"
+                                            >
+                                                <v-btn type="submit" class="px-3 mt-3" color="info">
+                                                    Gerenciar Rodadas
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-col>
+                                        <v-col
+                                        cols="4">
+                                            <v-card-actions class=" mt-0 justify-center text-center">
+                                                <v-btn type="submit" class="px-3 mt-3" color="warning">Deletar Liga</v-btn>
+                                            </v-card-actions>
+                                        </v-col>
+                                    </v-row>
 
                                 </v-container>
                             </v-card>
@@ -136,8 +154,6 @@ export default {
         async getClubes(){
             try{
                 const leagueClubes = await LeagueClubes.show(this.$route.params.id)
-                //console.log(this.$route.params.id)
-                //console.log(this.leagueClubes)
                 this.clubesData = leagueClubes.data
             }
             catch(err){
@@ -165,7 +181,13 @@ export default {
                 }
         },
 
-        async deleteLeague(){
+         setLeague(leagueData){
+            this.league.nome = leagueData.nome;
+            this.league.formato = leagueData.formato;
+            this.league.numParticipantes = leagueData.numParticipantes;
+        },
+
+        async deleteLeague(){ //chama o alert confirmando exclusão// se sim cai no método Deletar()
             this.alertDelete.show = true
             this.alertDelete.message = 'Você tem certeza que deseja excluir esta liga?'           
         },
@@ -185,12 +207,14 @@ export default {
                 this.alertData.show = true
             }
         },
-
-        setLeague(leagueData){
-            this.league.nome = leagueData.nome;
-            this.league.formato = leagueData.formato;
-            this.league.numParticipantes = leagueData.numParticipantes;
+        
+        async criarRodada(val){
+            this.$router.push({name: 'newRound', params: { id: val.id, league: val }})
         },
+        
+        async GerenciarRodadas(){
+                this.$router.replace("/ListRounds");
+        }
 
     },
 
