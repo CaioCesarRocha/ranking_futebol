@@ -17,7 +17,7 @@
                     xl="8"
                     class="mt-0"
                 >
-                    <v-form @submit.prevent="deleteLeague">
+                    <v-form>
                             <v-card class="elevation-12 pb-4 mt-0">
                                 <v-container fluid class="mt-3 my-2">
                                     <v-card-subtitle class="ma-0 ml-3 pa-0 mt-5 title font-weight-bold accent--text">
@@ -64,20 +64,36 @@
                                     justify="center"
                                     >
                                         <v-col
-                                        cols="4">
-                                            <v-card-actions 
-                                            @click="GerenciarRodadas" 
-                                            class=" mt-0 justify-center text-center"
-                                            >
-                                                <v-btn type="submit" class="px-3 mt-3" color="info">
+                                        cols="4"
+                                        >
+                                            <v-card-actions class=" mt-0 justify-center text-center">
+                                                <v-btn 
+                                                @click="criarRodadas"
+                                                class="px-3 mt-3" color="info"
+                                                >
+                                                    Criar Rodadas
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-col>
+                                        <v-col
+                                        cols="4"
+                                        >
+                                            <v-card-actions class=" mt-0 justify-center text-center">
+                                                <v-btn 
+                                                @click="gerenciarRodadas"
+                                                class="px-3 mt-3" color="info"
+                                                >
                                                     Gerenciar Rodadas
                                                 </v-btn>
                                             </v-card-actions>
                                         </v-col>
                                         <v-col
-                                        cols="4">
+                                        cols="4"
+                                        >
                                             <v-card-actions class=" mt-0 justify-center text-center">
-                                                <v-btn type="submit" class="px-3 mt-3" color="warning">Deletar Liga</v-btn>
+                                                <v-btn @click="deleteLeague" class="px-3 mt-3" color="error">
+                                                    Deletar Liga
+                                                </v-btn>
                                             </v-card-actions>
                                         </v-col>
                                     </v-row>
@@ -124,6 +140,7 @@ export default {
     data:()=>({
         clubesData: [],
         league:{
+            id: '',
             nome: '',
             formato: '',
             numParticipantes: '',
@@ -182,9 +199,11 @@ export default {
         },
 
          setLeague(leagueData){
+            this.league.id = leagueData.id;
             this.league.nome = leagueData.nome;
             this.league.formato = leagueData.formato;
             this.league.numParticipantes = leagueData.numParticipantes;
+            //console.log(this.league.id)
         },
 
         async deleteLeague(){ //chama o alert confirmando exclusão// se sim cai no método Deletar()
@@ -196,7 +215,7 @@ export default {
             try{
                 await Leagues.delete(this.$route.params.id)
                 this.alertDelete.show = false
-                this.alertData.message = 'A liga:' + this.league.nome + ' foi deletada com sucesso.'
+                this.alertData.message = 'A liga: ' + this.league.nome + ' foi deletada com sucesso.'
                 this.alertData.type = 'success'
                 this.alertData.show = true
             }
@@ -208,11 +227,11 @@ export default {
             }
         },
         
-        async criarRodada(val){
-            this.$router.push({name: 'newRound', params: { id: val.id, league: val }})
+        async criarRodadas(){
+            this.$router.push({name: 'newRound', params: { id: this.league.id}})
         },
         
-        async GerenciarRodadas(){
+        async gerenciarRodadas(){
                 this.$router.replace("/ListRounds");
         }
 

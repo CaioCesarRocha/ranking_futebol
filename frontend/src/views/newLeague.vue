@@ -360,10 +360,10 @@ export default {
         },
 
         formatoNome(league){
-            if(league.formato == 1){
+            if(league == '1'){
                return this.league.formato ='Pontos Corridos'
             }
-            else if(league.formato == 2){
+            else if(league == '2'){
                 return this.league.formato = 'Mata Mata'
             }
             else{

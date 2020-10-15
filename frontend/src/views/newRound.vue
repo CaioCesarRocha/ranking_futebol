@@ -19,14 +19,14 @@
                 >
                     <v-form @submit.prevent="deleteLeague">
                             <v-card class="elevation-12 pb-4 mt-0">
-                                <v-container fluid class="mt-3 my-2">
-                                    <v-card-subtitle class="ma-0 ml-3 pa-0 mt-5 title font-weight-bold accent--text">
+                                <v-container fluid class="mt-3 ">
+                                    <v-card-subtitle class="ma-0 ml-3 pa-0 mt-0 title font-weight-bold accent--text">
                                         {{league.nome}}
                                     </v-card-subtitle>                                                                 <v-divider
                                     class="mt-0 my-5"   
                                     />
                                     
-                                    <v-card-text class="px-8 pl-5 py-0 pt-5"> 
+                                    <v-card-text class="mt-0 px-8 pl-5 py-0 pt-5"> 
                                         <v-text-field
                                         outlined
                                         required
@@ -39,74 +39,68 @@
                                         />
                                     </v-card-text> 
 
-                                     <v-list-item
-                                        v-for="jogo in jogos"
-                                        :key="jogo.number"
-                                    >
-                                    
-                                    <v-card-subtitle 
-                                    align="center" 
-                                    class="ma-0 ml-3 pa-0 mt-3 font-weight-bold title accent--text"
-                                    v-model="rodada.jogo">
-                                         <p>Jogo 1</p>                                            
-                                    </v-card-subtitle> 
-                                   
+                                 
+
                                    <v-row
                                     align="center"
                                     >
-                                    <v-col
-                                    cols="12"
-                                    sm="5"
-                                    >
-                                        <v-select
+                                        <v-col
+                                        cols="12"
+                                        sm="5"
+                                        >
+                                            <v-card-subtitle class=" mt-0 accent--text title ml-3">
+                                                Mandante:
+                                            </v-card-subtitle>
+                                            <v-select
                                             class="accent--text ml-5 "
                                             v-model="rodada.mandante"
                                             :items="clubesData"
-                                            attach
-                                            chips
+                                            attach                                           
                                             item-text="nome"
                                             item-value="id"                                  
                                             no-data-text="Nenhum clube encontrado"                                      
                                             label="Selecione o Mandante:"                                       
                                             dense
                                             outlined                                        
-                                        >                                  
-                                        </v-select>
-                                    </v-col>
-                                    <v-col
-                                    cols="12"
-                                    sm="2"
-                                    >
-                                        <template >
-                                            <v-layout class="mt-0" justify-center>
-                                                <v-icon class="mt-0 mb-5" color="grey darken-4" x-large>
-                                                    mdi-roman-numeral-10
-                                                </v-icon>
-                                            </v-layout>
-                                        </template>
-                                    </v-col>
-                                    <v-col
-                                    cols="12"
-                                    sm="5"
-                                    >
-                                        <v-select
+                                            >                                  
+                                            </v-select>
+                                        </v-col>
+                                        <v-col
+                                        cols="12"
+                                        sm="2"
+                                        >
+                                            <template >
+                                                <v-layout class="mt-0" justify-center>
+                                                    <v-icon class="mt-10 mb-0" color="grey darken-4" x-large>
+                                                        mdi-roman-numeral-10
+                                                    </v-icon>
+                                                </v-layout>
+                                            </template>
+                                        </v-col>
+                                        <v-col
+                                        cols="12"
+                                        sm="5"
+                                        >
+                                            <v-card-subtitle class=" mt-0 accent--text title">
+                                            Visitante:
+                                            </v-card-subtitle>
+                                            <v-select
                                             class="accent--text mr-5"
                                             v-model="rodada.visitante"
                                             :items="clubesData"
                                             attach
-                                            chips
                                             item-text="nome"
                                             item-value="id"                                  
                                             no-data-text="Nenhum clube encontrado"                                      
                                             label="Selecione o Visitante:"                                       
                                             dense
                                             outlined                                        
-                                        >                                  
-                                        </v-select>
-                                    </v-col>
+                                            >                                  
+                                            </v-select>
+                                        </v-col>
                                    </v-row>
                                     <v-card-actions class=" mt-0 justify-center text-center">
-                                        <v-btn type="submit" class="px-3 mt-3" color="accent">Criar Rodada</v-btn>
+                                        <v-btn type="submit" class="px-3 mt-3" color="success">ADD Jogo</v-btn>
                                     </v-card-actions>
                                 </v-container>
                             </v-card>
@@ -132,8 +126,9 @@ export default {
 
     data:()=>({
         clubesData: [],
-        jogos:['Jogo 1', 'Jogo 2'],
+        jogos:['Jogo 1', 'Jogo 2','Jogo 3', 'Jogo 4', 'Jogo 5', 'Jogo 6', 'Jogo 7', 'Jogo 8', 'Jogo 9', 'Jogo 10'],
         league:{
+            id: '',
             nome: '',
             formato: '',
             numParticipantes: '',
@@ -143,7 +138,7 @@ export default {
             nome:'',
             mandante: '',
             visitante: '',
-            jogos: [],
+            jogo: '',
         }
     }),
 
@@ -168,11 +163,19 @@ export default {
 
 
     methods:{
-        checkLeagueParams() {
-            if(typeof this.$route.params.league == undefined || this.$route.params.league == null)
-                this.getLeague()
-            else{
-                this.setLeague(this.$route.params.league)
+        async getLeague() {
+            try{
+                const league = await Leagues.show(this.$route.params.id)
+                this.setLeague(league.data)
+                 //this.gettingLeague = this.errorGettingLeague = false
+            }
+            catch(err){
+                //this.gettingLeague = false
+                //this.errorGettingLeague = true                   
+                if(err.response.status == 404)
+                    this.errorMessage = 'Liga não encontrada'
+                else
+                    this.errorMessage = 'Houve um problema ao carregar dados desta liga' 
             }
         },
 
@@ -189,33 +192,18 @@ export default {
             }                                                 
         },
 
-        async getLeague() {
-            //this.gettingClub = true
-            try{
-                    const league = await Leagues.show(this.$route.params.id)
-                    this.setLeague(league.data)
-                    //this.gettingLeague = this.errorGettingLeague = false
-                }
-                catch(err){
-                    //this.gettingLeague = false
-                    //this.errorGettingLeague = true                   
-                    if(err.response.status == 404)
-                        this.errorMessage = 'Liga não encontrada'
-                    else
-                        this.errorMessage = 'Houve um problema ao carregar dados desta liga' 
-                }
-        },
-
         setLeague(leagueData){
+            this.league.id = leagueData.id;
             this.league.nome = leagueData.nome;
             this.league.formato = leagueData.formato;
             this.league.numParticipantes = leagueData.numParticipantes;
+            
         },
 
     },
 
     mounted(){
-        this.checkLeagueParams()
+        this.getLeague()
         this.getClubes()
     }
 }
