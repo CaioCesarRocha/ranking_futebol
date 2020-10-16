@@ -17,7 +17,7 @@
                     xl="8"
                     class="mt-0"
                 >
-                    <v-form @submit.prevent="deleteLeague">
+                    <v-form @submit.prevent="createRound">
                             <v-card class="elevation-12 pb-4 mt-0">
                                 <v-container fluid class="mt-3 ">
                                     <v-card-subtitle class="ma-0 ml-3 pa-0 mt-0 title font-weight-bold accent--text">
@@ -38,69 +38,8 @@
                                         class="mt-1"
                                         />
                                     </v-card-text> 
-
-                                 
-
-                                   <v-row
-                                    align="center"
-                                    >
-                                        <v-col
-                                        cols="12"
-                                        sm="5"
-                                        >
-                                            <v-card-subtitle class=" mt-0 accent--text title ml-3">
-                                                Mandante:
-                                            </v-card-subtitle>
-                                            <v-select
-                                            class="accent--text ml-5 "
-                                            v-model="rodada.mandante"
-                                            :items="clubesData"
-                                            attach                                           
-                                            item-text="nome"
-                                            item-value="id"                                  
-                                            no-data-text="Nenhum clube encontrado"                                      
-                                            label="Selecione o Mandante:"                                       
-                                            dense
-                                            outlined                                        
-                                            >                                  
-                                            </v-select>
-                                        </v-col>
-                                        <v-col
-                                        cols="12"
-                                        sm="2"
-                                        >
-                                            <template >
-                                                <v-layout class="mt-0" justify-center>
-                                                    <v-icon class="mt-10 mb-0" color="grey darken-4" x-large>
-                                                        mdi-roman-numeral-10
-                                                    </v-icon>
-                                                </v-layout>
-                                            </template>
-                                        </v-col>
-                                        <v-col
-                                        cols="12"
-                                        sm="5"
-                                        >
-                                            <v-card-subtitle class=" mt-0 accent--text title">
-                                            Visitante:
-                                            </v-card-subtitle>
-                                            <v-select
-                                            class="accent--text mr-5"
-                                            v-model="rodada.visitante"
-                                            :items="clubesData"
-                                            attach
-                                            item-text="nome"
-                                            item-value="id"                                  
-                                            no-data-text="Nenhum clube encontrado"                                      
-                                            label="Selecione o Visitante:"                                       
-                                            dense
-                                            outlined                                        
-                                            >                                  
-                                            </v-select>
-                                        </v-col>
-                                   </v-row>
                                     <v-card-actions class=" mt-0 justify-center text-center">
-                                        <v-btn type="submit" class="px-3 mt-3" color="success">ADD Jogo</v-btn>
+                                        <v-btn type="submit" class="px-3 mt-3" color="success">ADD Rodada</v-btn>
                                     </v-card-actions>
                                 </v-container>
                             </v-card>
@@ -108,16 +47,23 @@
                 </v-col>
             </v-row>            
         </v-container>
-
-    </div>
-    
+        <v-alert
+        :type="alertData.type"
+        v-model="alertData.show" 
+        class="importAlert elevation-11"
+        transition="slide-x-reverse-transition"
+        dismissible
+        >
+            {{alertData.message}}
+        </v-alert> 
+    </div>  
 </template>
 
 <script>
 import DrawerToolbar from '../components/DrawerToolbar'
 import {required, maxLength } from 'vuelidate/lib/validators'
 import Leagues from '../services/Leagues'
-import LeagueClubes from '../services/LeagueClubes'
+import Rounds from '../services/Rounds'
 
 export default {
     components:{
@@ -125,8 +71,6 @@ export default {
     },
 
     data:()=>({
-        clubesData: [],
-        jogos:['Jogo 1', 'Jogo 2','Jogo 3', 'Jogo 4', 'Jogo 5', 'Jogo 6', 'Jogo 7', 'Jogo 8', 'Jogo 9', 'Jogo 10'],
         league:{
             id: '',
             nome: '',
@@ -136,17 +80,21 @@ export default {
         },
         rodada:{
             nome:'',
-            mandante: '',
-            visitante: '',
-            jogo: '',
-        }
+            league_id:[]
+            
+        },
+        alertData: {
+            show: false,
+            message: '',
+            type: 'success'
+        } 
     }),
 
      validations:{
         rodada:{
             nome:{
                 required,
-                maxLength:maxLength(200)
+                maxLength:maxLength(300)
             },
         }  
     },
@@ -164,7 +112,7 @@ export default {
 
     methods:{
         async getLeague() {
-            try{
+            try{              
                 const league = await Leagues.show(this.$route.params.id)
                 this.setLeague(league.data)
                  //this.gettingLeague = this.errorGettingLeague = false
@@ -179,32 +127,55 @@ export default {
             }
         },
 
-        async getClubes(){
-            try{
-                const leagueClubes = await LeagueClubes.show(this.$route.params.id)
-                this.clubesData = leagueClubes.data
-            }
-            catch(err){
-                 if(err.response.status == 404)
-                    this.errorMessage = 'Clubes não encontrados'
-                else
-                    this.errorMessage = 'Houve um problema ao carregar os clubes desta liga' 
-            }                                                 
-        },
-
         setLeague(leagueData){
-            this.league.id = leagueData.id;
+            this.rodada.league_id = leagueData.id;
             this.league.nome = leagueData.nome;
             this.league.formato = leagueData.formato;
             this.league.numParticipantes = leagueData.numParticipantes;
-            
+            console.log(this.rodada.league_id)           
+        },
+
+        async createRound(){
+            this.$v.$touch()
+
+            if(this.$v.$invalid) {
+                return 
+            }
+            else{
+                try{
+                    this.rodada.nome = await this.upperString(this.rodada.nome)
+                    const storedRound = await Rounds.store(this.rodada)
+
+                    this.alertData.message ='A ' + storedRound.data.nome +' da liga '+ this.league.nome +' foi criado(a) com sucesso'
+                    this.alertData.type = 'success'
+                    this.alertData.show = true
+                    
+                    this.clearForm()
+                    this.$router.replace("/ListRounds");
+                }
+                catch(err){
+                    this.alertData.message = 'A Rodada não pode ser criada'
+                    this.alertData.type = 'error'
+                    this.alertData.show = true
+                }
+            }
+        },
+
+         upperString(string) {
+            return string.toUpperCase()
+        },
+
+        clearForm() {
+            this.rodada = {
+                nome: '',
+            }
+            this.$v.$reset()
         },
 
     },
 
     mounted(){
         this.getLeague()
-        this.getClubes()
     }
 }
 </script>
