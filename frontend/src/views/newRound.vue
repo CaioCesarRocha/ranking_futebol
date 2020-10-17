@@ -80,7 +80,8 @@ export default {
         },
         rodada:{
             nome:'',
-            league_id:[]
+            league_id:[],
+            league_nome: ''
             
         },
         alertData: {
@@ -129,10 +130,11 @@ export default {
 
         setLeague(leagueData){
             this.rodada.league_id = leagueData.id;
+            this.rodada.league_nome = leagueData.nome;
             this.league.nome = leagueData.nome;
             this.league.formato = leagueData.formato;
             this.league.numParticipantes = leagueData.numParticipantes;
-            console.log(this.rodada.league_id)           
+            //console.log(this.rodada.league_id)           
         },
 
         async createRound(){

@@ -232,7 +232,7 @@ export default {
         },
         
         async gerenciarRodadas(){
-                this.$router.replace("/ListRounds");
+            this.$router.push({name: 'ListRounds', params: { id: this.league.id, nome:this.league.nome}})
         }
 
     },

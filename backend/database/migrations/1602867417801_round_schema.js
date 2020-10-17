@@ -8,6 +8,7 @@ class RoundSchema extends Schema {
     this.create('rounds', (table) => {
       table.increments()
       table.integer('league_id').references('id').inTable('leagues').onUpdate('CASCADE').onDelete('CASCADE')
+      table.string('league_nome').notNullable()
       table.string('nome', 300).notNullable().unique()      
       table.timestamps()
     })
