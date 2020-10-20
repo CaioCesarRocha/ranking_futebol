@@ -105,7 +105,7 @@
                     <div class="mx-3 mt-3 ml-3 mb-3 md-6">  
                         <v-btn class="md-6 px-4" color="accent" @click="newRound"> 
                             Nova Rodada                         
-                        <v-icon right medium>mdi-newspaper-plus</v-icon>
+                        <v-icon right medium>mdi-playlist-plus</v-icon>
                         </v-btn>
                     </div>  
                 </v-col>
@@ -136,6 +136,7 @@ export default {
         message: '',
         isSearching: false,
         paginate: {
+            nome:'',
             page: 1,
             itemsPerPage: 10,
             itemsLength: 0,
@@ -167,17 +168,19 @@ export default {
     methods:{
         getLeague(){
             this.league.id = this.$route.params.id
-            this.league.nome= this.$route.params.nome
+            this.league.nome = this.$route.params.nome          
         },
 
         async getRounds(){
             this.isLoading = true
-           try{
-                const paginateParams = {
+           try{   
+                            
+                const Params = {
                     page: this.paginate.page,
                     itemsPerPage: this.paginate.itemsPerPage,
                     orderBy: this.sortData.orderBy,
                     sortDesc: this.sortData.sortDesc,
+                    idLeague: this.league.id
                 }
 
                 if(this.isSearching == true) {
@@ -186,17 +189,20 @@ export default {
                         searchText: this.searchText
                     }
 
-                    searchParams = Object.assign(searchParams, paginateParams)
+                    searchParams = Object.assign(searchParams, Params)
                     const page =  await Rounds.search(searchParams)                     
                     this.setPage(page.data)                
 
                 } 
                 else {
-                    const page = await Rounds.index(paginateParams)
-                    this.setPage(page.data)                                      
+                    //console.log(rodadaLeagueParams)
+                    //paginateParams = Object.assign(paginateParams, rodadaLeagueParams)
+                    const page = await Rounds.index(Params)
+                    this.setPage(page.data)                                   
                 }
                 this.isLoading = false
                 this.error = false
+
            }
            catch(err){
                 this.isLoading = false
@@ -267,8 +273,9 @@ export default {
     },
 
     mounted(){
-        this.getRounds()
         this.getLeague()
+        this.getRounds()
+        
     }
 
 }

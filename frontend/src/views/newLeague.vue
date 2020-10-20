@@ -75,7 +75,7 @@
 
                                     <v-radio-group v-if="league.formato == 1" 
                                     v-model="league.numParticipantes" 
-                                    class="mt-0 py-0 pt-0 pl-5" 
+                                    class="mt-0  py-0 pt-0 pl-5" 
                                     row
                                     >
                                         <v-radio                                        

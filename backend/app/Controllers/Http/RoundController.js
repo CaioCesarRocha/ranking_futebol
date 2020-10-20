@@ -22,6 +22,8 @@ class RoundController {
    */
   async index ({ request, response, view }) {
     const pagination = request.get()
+    //const numberId = pagination.id 
+    //console.log(pagination.leagueName)
 
     let page = pagination.page || 1
     let itemsPerPage = pagination.itemsPerPage || 10
@@ -36,15 +38,16 @@ class RoundController {
 
     try{
       const rounds = await Database
-        .from('rounds')
+        .from('rounds')   
         .orderBy(pagination.orderBy, pagination.sortDesc)
+        .where('league_id', pagination.idLeague)
         .paginate(page, itemsPerPage)
 
       return response.status(200).json(rounds)
     }
     catch(err){
-      return response.status(500).json({ message: 'Ocorreu um erro interno' })
-    }
+      return response.status(500).json({ message: 'Ocorreu um erro interno', description: err })
+    }    
   }
 
 
@@ -67,7 +70,8 @@ class RoundController {
       try{
           const rounds = await Database
             .from('rounds')
-            .where('nome', 'ILIKE', '%'+search.term+'%')
+            .where('league_id', search.idLeague)
+            .andWhere('nome', 'ILIKE', '%'+search.term+'%')
             .orderBy(search.orderBy, search.sortDesc)
             .paginate(page, itemsPerPage)
 

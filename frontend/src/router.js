@@ -32,7 +32,7 @@ const router = new Router({
             }
         },
         {
-            path: '/editClub',
+            path: '/editClub/:id',
             name: 'editClub',
             component: () => import('./views/editClub.vue'),
             meta: {
@@ -64,11 +64,11 @@ const router = new Router({
             }
         },
         {
-            path: '/editLeague',
+            path: '/editLeague/:id',
             name: 'editLeague',
             component: () => import('./views/editLeague.vue'),
             meta: {
-                title: "Clubes Inseridos",
+                title: "Editar Liga",
             }
         },
         {
@@ -80,7 +80,7 @@ const router = new Router({
             }
         },
         {
-            path: '/ListRounds',
+            path: '/ListRounds/:id',
             name: 'ListRounds',
             component: () => import('./views/ListRounds.vue'),
             meta: {

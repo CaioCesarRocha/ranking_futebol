@@ -2,13 +2,15 @@ import api from './api'
 
 export default{
 
-    index: (paginationParams) => {// -> carrega a ListRounds como index
+    index: (Params) => {// -> carrega a ListRounds como index
         return api.get('rounds', { params: {
-            page: paginationParams.page,
-            itemsPerPage: paginationParams.itemsPerPage,
-            orderBy: paginationParams.orderBy,
-            sortDesc: paginationParams.sortDesc
+            page: Params.page,
+            itemsPerPage: Params.itemsPerPage,
+            orderBy: Params.orderBy,
+            sortDesc: Params.sortDesc,
+            idLeague: Params.idLeague
         }})
+        
     },
     
     search: (searchParams) => {     //--> carrega a ListRounds com os dados passados na pesquisa
@@ -17,11 +19,13 @@ export default{
             itemsPerPage: searchParams.itemsPerPage,
             orderBy: searchParams.orderBy,
             sortDesc: searchParams.sortDesc,
-            term: searchParams.searchText
+            term: searchParams.searchText,
+            idLeague: searchParams.idLeague
         }})
     },
 
     store: (round) => {     //-> passar as info do formulario e salvar no banco
         return api.post('rounds', round)
     },
+
 }
