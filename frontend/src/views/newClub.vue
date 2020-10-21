@@ -89,6 +89,7 @@ import {required, maxLength } from 'vuelidate/lib/validators'
 import DrawerToolbar from '../components/DrawerToolbar'
 import Clubes from '../services/Clubes'
 
+
 export default {
     components:{
         DrawerToolbar
@@ -140,6 +141,7 @@ export default {
 
     },
     methods:{
+
         async createClub(){
             this.$v.$touch()
 
@@ -178,8 +180,8 @@ export default {
         upperString(string) {
             return string.toUpperCase()
         },
-    }
-   
+    },
+
 
 }
 </script>

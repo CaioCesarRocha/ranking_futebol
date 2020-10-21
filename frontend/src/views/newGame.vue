@@ -11,7 +11,7 @@
             >
                 <v-col
                     cols="12"
-                    sm="8"
+                    sm="12"
                     md="6"
                     lg="8"
                     xl="8"
@@ -20,40 +20,51 @@
                     <v-form @submit.prevent="deleteLeague">
                             <v-card class="elevation-12 pb-4 mt-0">
                                 <v-container fluid class="mt-3 ">
-                                    <v-card-subtitle class="ma-0 ml-3 pa-0 mt-0 title font-weight-bold accent--text">
+                                    <v-card-title class="ma-0 ml-3 pa-0 mt-0 title font-weight-bold accent--text">
                                         {{league.nome}}
-                                    </v-card-subtitle>                                                                 <v-divider
-                                    class="mt-0 my-5"   
+                                    </v-card-title>                                                                 <v-divider
+                                    class="mt-3 my-5"   
                                     />
-                                    
-                                    <v-card-text class="mt-0 px-8 pl-5 py-0 pt-5"> 
-                                        <v-text-field
-                                        outlined
-                                        required
-                                        label="Nome da Rodada"
-                                        v-model="rodada.nome"
-                                        :error-messages="nomeErrors"
-                                        name="name"
-                                        type="text"
-                                        class="mt-1"
-                                        />
-                                    </v-card-text> 
 
+                                    <v-card-subtitle
+                                    align="center" 
+                                    class="ma-0 pa-0 mt-0 title font-weight-bold info--text">
+                                        {{league.rodada}}
+                                    </v-card-subtitle> 
                                  
-
-                                   <v-row
+                                  <!-- <v-row
                                     align="center"
-                                    >
+                                    no-gutters
+                                    >   
+                                        <v-col
+                                        cols="12"
+                                        sm="6"
+                                        >
+                                            <v-card-subtitle class=" mt-0 info--text title ml-2">
+                                                    Mandante:
+                                            </v-card-subtitle>
+                                        </v-col>
+                                        <v-col
+                                        cols="12"
+                                        sm="6"
+                                        >
+                                            <v-card-subtitle class="mt-0 ml-10 info--text title">
+                                                Visitante:
+                                            </v-card-subtitle>
+                                        </v-col>
+                                   </v-row>-->
+                                    <v-row
+                                    align="center"
+                                    no-gutters
+                                    >  
                                         <v-col
                                         cols="12"
                                         sm="5"
                                         >
-                                            <v-card-subtitle class=" mt-0 accent--text title ml-3">
-                                                Mandante:
-                                            </v-card-subtitle>
+                                            
                                             <v-select
-                                            class="accent--text ml-5 "
-                                            v-model="rodada.mandante"
+                                            class="accent--text ml-5 mt-5"
+                                            v-model="jogo.mandante"
                                             :items="clubesData"
                                             attach                                           
                                             item-text="nome"
@@ -65,28 +76,27 @@
                                             >                                  
                                             </v-select>
                                         </v-col>
+                                        
                                         <v-col
                                         cols="12"
                                         sm="2"
                                         >
                                             <template >
-                                                <v-layout class="mt-0" justify-center>
-                                                    <v-icon class="mt-10 mb-0" color="grey darken-4" x-large>
+                                                <v-layout class="mt-5" justify-center>
+                                                    <v-icon class="mb-5" color="grey darken-4" x-large>
                                                         mdi-roman-numeral-10
                                                     </v-icon>
                                                 </v-layout>
                                             </template>
                                         </v-col>
+
                                         <v-col
                                         cols="12"
                                         sm="5"
-                                        >
-                                            <v-card-subtitle class=" mt-0 accent--text title">
-                                            Visitante:
-                                            </v-card-subtitle>
+                                        >                                      
                                             <v-select
-                                            class="accent--text mr-5"
-                                            v-model="rodada.visitante"
+                                            class="accent--text mr-5 mt-5"
+                                            v-model="jogo.visitante"
                                             :items="clubesData"
                                             attach
                                             item-text="nome"
@@ -98,9 +108,76 @@
                                             >                                  
                                             </v-select>
                                         </v-col>
+                                    </v-row>
+
+                                    <v-divider
+                                        class="mt-3 my-3"   
+                                    />
+
+                                   <v-card-subtitle
+                                    align="center" 
+                                    class="ma-0 pa-0 mt-0 title font-weight-bold info--text">
+                                        Placar
+                                    </v-card-subtitle>   
+                                    
+                                    <v-row
+                                    no-gutters
+                                    class="mt-3"
+                                    >
+                                        <v-col
+                                        cols="12"
+                                        sm="3"
+                                        align="right"
+                                        > 
+                                            <p class="mr-3 mt-3 font-weight-bold accent--text">Mandante</p>
+                                        </v-col>   
+
+                                        <v-col
+                                        cols="12"
+                                        sm="2"
+                                        > 
+                                            <v-select
+                                                :items="placares"
+                                                label="0"
+                                                solo
+                                            ></v-select>                                        
+                                        </v-col>
+
+                                        <v-col
+                                        cols="12"
+                                        sm="2"
+                                        >
+                                            <template >
+                                                <v-layout class="mt-3" justify-center>
+                                                    <v-icon class="mb-10" color="grey darken-4" x-large>
+                                                        mdi-roman-numeral-10
+                                                    </v-icon>
+                                                </v-layout>
+                                            </template>
+                                        </v-col>
+                                        <v-col
+                                        cols="12"
+                                        sm="2"
+                                        > 
+                                            <v-select
+                                                :items="placares"
+                                                label="0"
+                                                solo
+                                            ></v-select>                                        
+                                        </v-col>
+                                        <v-col
+                                        cols="12"
+                                        sm="3"                                      
+                                        > 
+                                        <p class="ml-3 mt-3 font-weight-bold accent--text">Visitante</p>
+                                         </v-col>
+
+                                         
+                                        
+
                                    </v-row>
                                     <v-card-actions class=" mt-0 justify-center text-center">
-                                        <v-btn type="submit" class="px-3 mt-3" color="success">ADD Jogo</v-btn>
+                                        <v-btn type="submit" class="px-3" color="success">ADD Jogo</v-btn>
                                     </v-card-actions>
                                 </v-container>
                             </v-card>
@@ -115,8 +192,7 @@
 
 <script>
 import DrawerToolbar from '../components/DrawerToolbar'
-import {required, maxLength } from 'vuelidate/lib/validators'
-import Leagues from '../services/Leagues'
+//import Leagues from '../services/Leagues'
 import LeagueClubes from '../services/LeagueClubes'
 
 export default {
@@ -126,62 +202,38 @@ export default {
 
     data:()=>({
         clubesData: [],
-        jogos:['Jogo 1', 'Jogo 2','Jogo 3', 'Jogo 4', 'Jogo 5', 'Jogo 6', 'Jogo 7', 'Jogo 8', 'Jogo 9', 'Jogo 10'],
+        placares:[0,1,2,3,4,5,6,7,8,9,10],
         league:{
+            rodada:'',
             id: '',
             nome: '',
             formato: '',
             numParticipantes: '',
             selectedClubes:[]
         },
-        rodada:{
-            nome:'',
+        jogo:{
+            numero:'',
             mandante: '',
             visitante: '',
-            jogo: '',
+            golsMandante: '',
+            golsVisitante: '',
         }
     }),
 
-     validations:{
-        rodada:{
-            nome:{
-                required,
-                maxLength:maxLength(200)
-            },
-        }  
-    },
-
     computed:{
-        nomeErrors(){
-            const errors = []
-            if (!this.$v.rodada.nome.$dirty) return errors
-            !this.$v.rodada.nome.required && errors.push('O nome da rodada é obrigatório')
-            !this.$v.rodada.nome.maxLength && errors.push('O nome da rodada excedeu o limite de caracteres')          
-            return errors
-        },
     },
 
 
     methods:{
         async getLeague() {
-            try{
-                const league = await Leagues.show(this.$route.params.id)
-                this.setLeague(league.data)
-                 //this.gettingLeague = this.errorGettingLeague = false
-            }
-            catch(err){
-                //this.gettingLeague = false
-                //this.errorGettingLeague = true                   
-                if(err.response.status == 404)
-                    this.errorMessage = 'Liga não encontrada'
-                else
-                    this.errorMessage = 'Houve um problema ao carregar dados desta liga' 
-            }
+           this.league.id = this.$route.params.idLeague
+           this.league.nome = this.$route.params.nomeLiga
+           this.league.rodada = this.$route.params.nomeRodada
         },
 
         async getClubes(){
             try{
-                const leagueClubes = await LeagueClubes.show(this.$route.params.id)
+                const leagueClubes = await LeagueClubes.show(this.$route.params.idLeague)
                 this.clubesData = leagueClubes.data
             }
             catch(err){
@@ -192,13 +244,12 @@ export default {
             }                                                 
         },
 
-        setLeague(leagueData){
-            this.league.id = leagueData.id;
-            this.league.nome = leagueData.nome;
-            this.league.formato = leagueData.formato;
-            this.league.numParticipantes = leagueData.numParticipantes;
-            
-        },
+        //setLeague(leagueData){
+            //this.league.id = leagueData.id;
+            //this.league.nome = leagueData.nome;
+            //this.league.formato = leagueData.formato;
+            //this.league.numParticipantes = leagueData.numParticipantes;        
+        //},
 
     },
 

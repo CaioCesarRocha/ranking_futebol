@@ -87,6 +87,14 @@ const router = new Router({
                 title: "Rodadas",
             }
         },
+        {
+            path: '/newGame',
+            name: 'newGame',
+            component: () => import('./views/newGame.vue'),
+            meta: {
+                title: "Novo Jogo",
+            }
+        },
 
 
     ]

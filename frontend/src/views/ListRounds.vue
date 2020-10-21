@@ -57,8 +57,8 @@
                             @update:page="getPage"
                             @update:sort-desc="sortDescFunc"
                             @update:sort-by="sortByFunc"
-                            loading-text="Carregando ligas..."
-                            no-data-text="Nenhuma liga encontrada"
+                            loading-text="Carregando rodadas..."
+                            no-data-text="Nenhuma rodada encontrada"
                             class="elevation-1"
                             color="accent"        
                             locale="pt-BR"  
@@ -71,11 +71,12 @@
                                 </v-layout>                       
                             </template>
 
-                            <!--<template v-slot:[`item.numParticipantes`]="{ item }" >
-                                <v-layout justify-center v-model="item.numParticipantes">
-                                    {{item.numParticipantes}}
+                            <template v-slot:[`item.nome`]="{ item }" >
+                                <v-layout justify-center>
+                                    {{item.nome}}
                                 </v-layout>                       
-                            </template>-->
+                            </template>
+
 
                             <template v-slot:[`item.id`]="{ item }" >
                                 <v-layout justify-center>
@@ -215,8 +216,7 @@ export default {
             this.paginate.page = pageData.page
             this.paginate.itemsPerPage = pageData.PerPage
             this.paginate.itemsLength = parseInt(pageData.total)
-            this.roundsData = pageData.data
-            
+            this.roundsData = pageData.data      
         },
 
         getItemsPerPage(val) {
@@ -268,7 +268,8 @@ export default {
         },
         
         handleClickRow(val) {
-            this.$router.push({name: '', params: { id: val.id, idLeague: this.league.id}})
+
+            this.$router.push({name: 'newGame', params: { id: val.id, idLeague: this.league.id, nomeLiga:this.league.nome, nomeRodada: val.nome}})
         }
     },
 
