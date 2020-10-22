@@ -28,4 +28,8 @@ export default{
         return api.post('rounds', round)
     },
 
+    info: (id) => {
+        return api.get(`rounds/${id}`)
+    },
+
 }

@@ -194,6 +194,7 @@
 import DrawerToolbar from '../components/DrawerToolbar'
 //import Leagues from '../services/Leagues'
 import LeagueClubes from '../services/LeagueClubes'
+import Rounds from '../services/Rounds'
 
 export default {
     components:{
@@ -204,12 +205,10 @@ export default {
         clubesData: [],
         placares:[0,1,2,3,4,5,6,7,8,9,10],
         league:{
+            idRodada: '',
             rodada:'',
-            id: '',
+            idLiga: '',
             nome: '',
-            formato: '',
-            numParticipantes: '',
-            selectedClubes:[]
         },
         jogo:{
             numero:'',
@@ -217,7 +216,8 @@ export default {
             visitante: '',
             golsMandante: '',
             golsVisitante: '',
-        }
+        },
+        getclubes: true
     }),
 
     computed:{
@@ -225,37 +225,66 @@ export default {
 
 
     methods:{
+        async checkRoundsParams(){
+            if(typeof this.$route.params.rodada == undefined || this.$route.params.rodada == null)
+                this.getInfoRodada()
+                
+            else{
+                this.getLeague()
+                this.getClubes()
+            }
+
+        },
+
+        async getInfoRodada(){
+            const rodada = await Rounds.info(this.$route.params.id)
+            this.league.idLiga = rodada.data.league_id
+            this.league.nome = rodada.data.league_nome
+            this.league.rodada = rodada.data.nome
+            this.league.idRodada = rodada.data.id
+            this.getclubes = false;
+            this.getClubes()          
+        },
+
         async getLeague() {
-           this.league.id = this.$route.params.idLeague
+           this.league.idLiga = this.$route.params.idLeague
            this.league.nome = this.$route.params.nomeLiga
            this.league.rodada = this.$route.params.nomeRodada
+           this.league.idRodada = this.$route.params.id
         },
 
         async getClubes(){
-            try{
-                const leagueClubes = await LeagueClubes.show(this.$route.params.idLeague)
-                this.clubesData = leagueClubes.data
-            }
-            catch(err){
-                 if(err.response.status == 404)
-                    this.errorMessage = 'Clubes não encontrados'
-                else
+            if(this.getclubes == true)
+                try{
+                    const leagueClubes = await LeagueClubes.show(this.$route.params.idLeague)
+                    this.clubesData = leagueClubes.data
+                }
+                catch(err){
+                    if(err.response.status == 404)
+                     this.errorMessage = 'Clubes não encontrados'
+                    else
                     this.errorMessage = 'Houve um problema ao carregar os clubes desta liga' 
-            }                                                 
+                }
+            
+            else{
+                try{
+                    const leagueClubes = await LeagueClubes.show(this.league.idLiga)
+                    this.clubesData = leagueClubes.data
+                }
+                catch(err){
+                    if(err.response.status == 404)
+                        this.errorMessage = 'Clubes não encontrados'
+                    else
+                        this.errorMessage = 'Houve um problema ao carregar os clubes desta liga' 
+                }
+
+            }                                                          
         },
-
-        //setLeague(leagueData){
-            //this.league.id = leagueData.id;
-            //this.league.nome = leagueData.nome;
-            //this.league.formato = leagueData.formato;
-            //this.league.numParticipantes = leagueData.numParticipantes;        
-        //},
-
+        
     },
 
     mounted(){
-        this.getLeague()
-        this.getClubes()
+        this.checkRoundsParams()
     }
 }
 </script>

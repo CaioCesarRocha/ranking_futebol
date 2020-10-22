@@ -82,6 +82,12 @@ class RoundController {
       }  
   }
 
+  async info ({ params, request, response, view }) {
+    const round = await Round.findOrFail(params.id)
+
+    return round
+  }
+
   /**
    * Render a form to be used for creating a new round.
    * GET rounds/create

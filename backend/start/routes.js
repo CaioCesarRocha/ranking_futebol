@@ -32,6 +32,9 @@ Route.delete('/leagues/:id', 'LeagueController.destroy');
 Route.get('/rounds', 'RoundController.index');
 Route.post('/rounds', 'RoundController.store');
 Route.get('/rounds/search', 'RoundController.search');
+Route.get('/rounds/:id', 'RoundController.info');
+
+Route.post('/games', 'GameController.store');
 
 Route.get('/leagueClubes/:id', 'LeagueClubeController.show');
 

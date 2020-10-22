@@ -268,8 +268,7 @@ export default {
         },
         
         handleClickRow(val) {
-
-            this.$router.push({name: 'newGame', params: { id: val.id, idLeague: this.league.id, nomeLiga:this.league.nome, nomeRodada: val.nome}})
+            this.$router.push({name: 'newGame', params: { id: val.id, idLeague: this.league.id, nomeLiga:this.league.nome, nomeRodada: val.nome, rodada: val}})
         }
     },
 
