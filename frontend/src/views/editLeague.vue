@@ -172,6 +172,7 @@ export default {
             try{
                 const leagueClubes = await LeagueClubes.show(this.$route.params.id)
                 this.clubesData = leagueClubes.data
+                
             }
             catch(err){
                  if(err.response.status == 404)

@@ -10,6 +10,7 @@ class LeagueSchema extends Schema {
       table.string('nome', 200).notNullable().unique()
       table.string('formato').notNullable()
       table.integer('numParticipantes').notNullable()
+      table.string('selectedClubes')
       table.timestamps()
     })
   }

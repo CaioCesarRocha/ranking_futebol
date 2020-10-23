@@ -14,9 +14,9 @@ class LeagueClubeSchema extends Schema {
       table.integer('vitorias')
       table.integer('empates')
       table.integer('derrotas')
-      table.integer('golsFeitos')
-      table.integer('golsSofridos')
-      table.integer('saldoGols')
+      table.integer('gmarcados')
+      table.integer('gsofridos')
+      table.integer('saldo')
     })
   }
   down () {

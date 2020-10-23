@@ -114,9 +114,9 @@ class LeagueController {
           row.vitorias = 0
           row.empates = 0
           row.derrotas = 0
-          row.golsFeitos = 0
-          row.golsSofridos = 0
-          row.saldoGols = 0
+          row.gmarcados = 0
+          row.gsofridos = 0
+          row.saldo = 0
         })                
     });
     

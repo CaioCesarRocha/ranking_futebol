@@ -17,7 +17,7 @@
                     xl="8"
                     class="mt-0"
                 >
-                    <v-form @submit.prevent="deleteLeague">
+                    <v-form @submit.prevent="confirmCreate">
                             <v-card class="elevation-12 pb-4 mt-0">
                                 <v-container fluid class="mt-3 ">
                                     <v-card-title class="ma-0 ml-3 pa-0 mt-0 title font-weight-bold accent--text">
@@ -64,7 +64,7 @@
                                             
                                             <v-select
                                             class="accent--text ml-5 mt-5"
-                                            v-model="jogo.mandante"
+                                            v-model="jogo.mandante_id"
                                             :items="clubesData"
                                             attach                                           
                                             item-text="nome"
@@ -96,7 +96,7 @@
                                         >                                      
                                             <v-select
                                             class="accent--text mr-5 mt-5"
-                                            v-model="jogo.visitante"
+                                            v-model="jogo.visitante_id"
                                             :items="clubesData"
                                             attach
                                             item-text="nome"
@@ -137,6 +137,7 @@
                                         sm="2"
                                         > 
                                             <v-select
+                                                v-model="jogo.golsMandante"
                                                 :items="placares"
                                                 label="0"
                                                 solo
@@ -160,6 +161,7 @@
                                         sm="2"
                                         > 
                                             <v-select
+                                                v-model="jogo.golsVisitante"
                                                 :items="placares"
                                                 label="0"
                                                 solo
@@ -185,6 +187,18 @@
                 </v-col>
             </v-row>            
         </v-container>
+        <v-alert
+        :type="alertData.type"
+        v-model="alertData.show" 
+        class="importAlert elevation-11"
+        transition="slide-x-reverse-transition"
+        dismissible
+        >
+            {{alertData.message}}
+            <v-btn v-if="showCriar == true" @click="creat" type="submit" class="px-3 mt0" color="info"> 
+                OK
+            </v-btn>
+        </v-alert>
 
     </div>
     
@@ -192,9 +206,9 @@
 
 <script>
 import DrawerToolbar from '../components/DrawerToolbar'
-//import Leagues from '../services/Leagues'
 import LeagueClubes from '../services/LeagueClubes'
 import Rounds from '../services/Rounds'
+import Games from '../services/Games'
 
 export default {
     components:{
@@ -211,13 +225,42 @@ export default {
             nome: '',
         },
         jogo:{
-            numero:'',
-            mandante: '',
-            visitante: '',
+            league_id:'',
+            rodada_id:'',
+            mandante_id: '',
+            visitante_id: '',
             golsMandante: '',
             golsVisitante: '',
         },
-        getclubes: true
+        mandante:{
+            id: '',
+            pontos: '',
+            jogos: '',
+            vitorias: '',
+            empates: '',
+            derrotas: '',
+            golsFeitos: '',
+            golsSofridos: '',
+            saldoGols: ''
+        },
+        visitante:{
+            id: '',
+            pontos: '',
+            jogos: '',
+            vitorias: '',
+            empates: '',
+            derrotas: '',
+            golsFeitos: '',
+            golsSofridos: '',
+            saldoGols: ''
+        },
+        alertData: {
+            show: false,
+            message: '',
+            type: 'success'
+        }, 
+        getclubes: true,
+        showCriar: true
     }),
 
     computed:{
@@ -236,7 +279,7 @@ export default {
 
         },
 
-        async getInfoRodada(){
+        async getInfoRodada(){ //pegar as informaçoes pelo id na url caso atualize a pagina
             const rodada = await Rounds.info(this.$route.params.id)
             this.league.idLiga = rodada.data.league_id
             this.league.nome = rodada.data.league_nome
@@ -253,7 +296,7 @@ export default {
            this.league.idRodada = this.$route.params.id
         },
 
-        async getClubes(){
+        async getClubes(){   // pega os clubes daquela rodada pertencente a liga
             if(this.getclubes == true)
                 try{
                     const leagueClubes = await LeagueClubes.show(this.$route.params.idLeague)
@@ -279,6 +322,110 @@ export default {
                 }
 
             }                                                          
+        },
+
+        async confirmCreate(){           
+            this.jogo.league_id = this.league.idLiga,
+            this.jogo.rodada_id = this.league.idRodada,
+            
+            this.alertData.message ='Confirma estes dados para salvar o jogo?'
+            this.alertData.type = 'success'
+            this.alertData.show = true
+            this.showCriar = true
+            this.getInfoClubes()           
+        },
+
+        async creat(){
+            this.showCriar = false
+
+            if(this.mandante.id != this.jogo.mandante_id || this.mandante.golsFeitos != this.golsMandante || this. visitante.id != this.jogo.visitante_id || this.visitante.golsFeitos != this.golsVisitante)
+                this.getInfoClubes()
+
+              try{                  
+                    const storedGame = await Games.store(this.jogo)
+                    this.alertData.message ='Jogo  adicionado com sucesso.'
+                    this.alertData.type = 'success'
+                    this.alertData.show = true
+                    this.jogoatual = storedGame.data.id
+                    
+                    this.clearForm()
+                    //this.$router.replace("/ListGames");
+                }
+                catch(err){
+                    this.alertData.message = 'O jogo não pode ser criado'
+                    this.alertData.type = 'error'
+                    this.alertData.show = true
+                }
+        },
+
+        async getInfoClubes(){ // pegar os dados dos clube no banco(P/J/V/E)
+            this.mandante.id = this.jogo.mandante_id
+            this.visitante.id = this.jogo.visitante_id
+
+
+            const info = await LeagueClubes.info(this.mandante.id)
+            this.mandante.pontos = info.data.pontos
+            this.mandante.jogos = info.data.jogos
+            this.mandante.vitorias = info.data.vitorias
+            this.mandante.empates = info.data.empates
+            this.mandante.derrotas = info.data.derrotas
+            this.mandante.golsFeitos = info.data.golsFeitos
+            this.mandante.golsSofridos = info.data.golsSofridos
+            this.mandante.saldoGols = info.data.saldoGols
+
+            const infoV = await LeagueClubes.info(this.visitante.id)
+            this.visitante.pontos = infoV.data.pontos
+            this.visitante.jogos = infoV.data.jogos
+            this.visitante.vitorias = infoV.data.vitorias
+            this.visitante.empates = infoV.data.empates
+            this.visitante.derrotas = infoV.data.derrotas
+            this.visitante.golsFeitos = info.data.golsFeitos
+            this.visitante.golsSofridos = infoV.data.golsSofridos
+            this.visitante.saldoGols = infoV.data.saldoGols
+
+            this.currentPoints()
+
+        },
+
+        currentPoints(){
+            this.mandante.jogo += 1
+            this.visitante.jogo += 1
+            this.mandante.golsFeitos += this.jogo.golsMandante
+            this.visitante.golsFeitos += this.jogo.golsVisitante
+            this.mandante.golsSofridos += this.jogo.golsVisitante
+            this.visitante.golsSofridos += this.jogo.golsMandante
+            this.mandante.saldoGols = this.mandante.golsFeitos - this.mandante.golsSofridos
+            this.visitante.saldoGols = this.visitante.golsFeitos - this.visitante.golsSofridos
+
+            
+                if(this.golsMandante == this.golsVisitante) {
+                    this.mandante.pontos += 1
+                    this.visitante.pontos += 1
+                    this.mandante.empates += 1
+                    this.visitante.empates += 1
+                }           
+               else if(this.golsMandante > this.golsVisitante) {
+                    this.mandante.pontos += 3
+                    this.mandante.vitorias += 1
+                    this.visitante.derrotas += 1
+                }
+                else{
+                    this.visitante.pontos += 3
+                    this.mandante.derrotas += 1
+                    this.visitante.vitorias += 1
+                }           
+        },
+
+        
+        clearForm() {
+            this.jogo = {
+                league_id:'',
+                rodada_id:'',
+                mandante_id: '',
+                visitante_id: '',
+                golsMandante: '',
+                golsVisitante: '',
+            }
         },
         
     },

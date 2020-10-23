@@ -80,7 +80,7 @@ export default {
         },
         rodada:{
             nome:'',
-            league_id:[],
+            league_id:'',
             league_nome: ''
             
         },
@@ -134,7 +134,7 @@ export default {
             this.league.nome = leagueData.nome;
             this.league.formato = leagueData.formato;
             this.league.numParticipantes = leagueData.numParticipantes;
-            //console.log(this.rodada.league_id)           
+                   
         },
 
         async createRound(){
@@ -151,9 +151,10 @@ export default {
                     this.alertData.message ='A ' + storedRound.data.nome +' da liga '+ this.league.nome +' foi criado(a) com sucesso'
                     this.alertData.type = 'success'
                     this.alertData.show = true
+                     
+                    //this.clearForm()
                     
-                    this.clearForm()
-                    this.$router.replace("/ListRounds");
+                    this.$router.push({name: 'ListRounds', params: { id: this.rodada.league_id, nome: this.rodada.league_nome}})
                 }
                 catch(err){
                     this.alertData.message = 'A Rodada não pode ser criada'
@@ -177,6 +178,7 @@ export default {
     },
 
     mounted(){
+        this.clearForm()
         this.getLeague()
     }
 }

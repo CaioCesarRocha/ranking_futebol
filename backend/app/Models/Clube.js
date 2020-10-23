@@ -4,9 +4,6 @@
 const Model = use('Model')
 
 class Clube extends Model {
-    static get table () {
-        return 'clubes' 
-    }
 
     leagues(){
         return this

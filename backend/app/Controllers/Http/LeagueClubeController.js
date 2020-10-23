@@ -59,12 +59,23 @@ class LeagueClubeController {
 
     const nomeClubes = await Database
     
-    .raw(`select c.nome 
+    .raw(`select c.nome, c.id
     from clubes as c 
     inner join league_clube as lc 
     on lc.clube_id = c.id
     where lc.league_id = ${params.id} `)
     return nomeClubes.rows
+  }
+
+  async info ({ params, request, response, view }) {
+
+   const infoMandante = await Database
+    .raw(`select c.pontos, c.vitorias, c.empates, c.derrotas, c.jogos, c.gmarcados, c.gsofridos, c.saldo
+      from league_clube as c
+      where c.clube_id = ${params.id}`)
+
+    return infoMandante.rows
+    
   }
 
   /**

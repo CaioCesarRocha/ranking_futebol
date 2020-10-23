@@ -159,26 +159,14 @@
                                         multiple                                        
                                     >
 
-                                    <template v-slot:prepend-item>                                      
-                                        <v-list-item
-                                            ripple
-                                            @click="toggle"
-                                        >
-                                            <v-list-item-action>
-                                            <v-icon 
-                                            :color="league.selectedClubes.length > 0 ? 'indigo darken-4' : ''">
-                                                {{ icon }}
-                                            </v-icon>
-                                            </v-list-item-action>
-                                            <v-list-item-content>
-                                            <v-list-item-title>
-                                                Selecionar todos os clubes
-                                            </v-list-item-title>
-                                            </v-list-item-content>
-
-                                        </v-list-item>
-                                        <v-divider class="mt-2"></v-divider>
-                                    </template>
+                                        <template>
+                                                                            
+                                            <v-list-item
+                                                ripple
+                                                @click="getClubSelected"                                           
+                                            >
+                                            </v-list-item>                                        
+                                        </template>
                                     </v-select>
 
                                     <v-layout 
@@ -192,7 +180,7 @@
                                         <v-card-subtitle                                            
                                         class="mt-0 green--text font-weight-bold"
                                         >
-                                            Clubes Selecionados: {{ league.selectedClubes.length }} / {{league.numParticipantes}}
+                                            Clubes Selecionados: {{ league.selectedClubes.length }} / {{league.numParticipantes}}                                          
                                         </v-card-subtitle>
                                     </v-layout>
                                     
@@ -273,17 +261,6 @@ export default {
             !this.$v.league.nome.required && errors.push('O nome do Clube é obrigatório')
             !this.$v.league.nome.maxLength && errors.push('O clube excedeu o limite de caracteres')          
             return errors
-        },
-        AllClubesSelect () {
-            return this.league.selectedClubes.length === this.clubesData.length
-        },
-        SomeClubesSelect () {
-            return this.league.selectedClubes.length > 0 && !this.clubesData.length
-        },
-        icon () {
-            if (this.AllClubesSelect) return 'mdi-close-box'
-            if (this.SomeClubesSelect) return 'mdi-minus-box'
-            return 'mdi-checkbox-blank-outline'
         },
     },
 
@@ -371,14 +348,10 @@ export default {
             }
         },
 
-        toggle () {           
-            this.$nextTick(() => {
-               //console.log(this.league.selectedClubes)              
-                if (this.AllClubesSelect) {
-                    this.league.selectedClubes = []
-                } else {
-                    this.league.selectedClubes = this.clubesData.slice() 
-                }                                       
+        getClubSelected() {           
+            this.$nextTick(() => {           
+                    this.league.selectedClubes = this.clubesData.slice()                
+                console.log(this.league)                                       
             })
         },
     },

@@ -62,7 +62,7 @@
                             class="elevation-1"
                             color="accent"        
                             locale="pt-BR"  
-                            item-key="league_nome"
+                            item-key="nome"
                             @click:row="handleClickRow"                                                                   > 
 
                             <template v-slot:[`item.league_nome`]="{ item }" >
