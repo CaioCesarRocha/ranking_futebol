@@ -38,6 +38,7 @@ Route.post('/games', 'GameController.store');
 
 Route.get('/leagueClubes/:id', 'LeagueClubeController.show');
 Route.get('/leagueClubes/info/:id', 'LeagueClubeController.info');
+Route.put('/leagueClubes/:id', 'LeagueClubeController.update');
 
 
 

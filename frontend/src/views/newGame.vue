@@ -217,6 +217,8 @@ export default {
 
     data:()=>({
         clubesData: [],
+        mandanteData: [],
+        visitanteData:[],
         placares:[0,1,2,3,4,5,6,7,8,9,10],
         league:{
             idRodada: '',
@@ -229,30 +231,32 @@ export default {
             rodada_id:'',
             mandante_id: '',
             visitante_id: '',
-            golsMandante: '',
-            golsVisitante: '',
+            golsMandante: 0,
+            golsVisitante: 0,
         },
         mandante:{
+            league_id: '',
             id: '',
             pontos: '',
             jogos: '',
             vitorias: '',
             empates: '',
             derrotas: '',
-            golsFeitos: '',
-            golsSofridos: '',
-            saldoGols: ''
+            gmarcados: '',
+            gsofridos: '',
+            saldo: ''
         },
         visitante:{
+            league_id:'',
             id: '',
             pontos: '',
             jogos: '',
             vitorias: '',
             empates: '',
             derrotas: '',
-            golsFeitos: '',
-            golsSofridos: '',
-            saldoGols: ''
+            gmarcados: '',
+            gsofridos: '',
+            saldo: ''
         },
         alertData: {
             show: false,
@@ -270,7 +274,7 @@ export default {
     methods:{
         async checkRoundsParams(){
             if(typeof this.$route.params.rodada == undefined || this.$route.params.rodada == null)
-                this.getInfoRodada()
+                this.getInfoRound()
                 
             else{
                 this.getLeague()
@@ -279,7 +283,7 @@ export default {
 
         },
 
-        async getInfoRodada(){ //pegar as informaçoes pelo id na url caso atualize a pagina
+        async getInfoRound(){ //pegar as informaçoes pelo id na url caso atualize a pagina
             const rodada = await Rounds.info(this.$route.params.id)
             this.league.idLiga = rodada.data.league_id
             this.league.nome = rodada.data.league_nome
@@ -343,6 +347,9 @@ export default {
 
               try{                  
                     const storedGame = await Games.store(this.jogo)
+                    await LeagueClubes.update(this.mandante.league_id, this.mandante)
+                    await LeagueClubes.update(this.visitante.league_id, this.visitante)
+
                     this.alertData.message ='Jogo  adicionado com sucesso.'
                     this.alertData.type = 'success'
                     this.alertData.show = true
@@ -362,49 +369,53 @@ export default {
             this.mandante.id = this.jogo.mandante_id
             this.visitante.id = this.jogo.visitante_id
 
+            const info = await LeagueClubes.info(this.mandante.id)           
+            this.mandanteData = info.data
 
-            const info = await LeagueClubes.info(this.mandante.id)
-            this.mandante.pontos = info.data.pontos
-            this.mandante.jogos = info.data.jogos
-            this.mandante.vitorias = info.data.vitorias
-            this.mandante.empates = info.data.empates
-            this.mandante.derrotas = info.data.derrotas
-            this.mandante.golsFeitos = info.data.golsFeitos
-            this.mandante.golsSofridos = info.data.golsSofridos
-            this.mandante.saldoGols = info.data.saldoGols
+            this.mandante.league_id = this.mandanteData[0].id
+            this.mandante.pontos = this.mandanteData[0].pontos
+            this.mandante.jogos = this.mandanteData[0].jogos
+            this.mandante.vitorias = this.mandanteData[0].vitorias
+            this.mandante.empates = this.mandanteData[0].empates
+            this.mandante.derrotas = this.mandanteData[0].derrotas
+            this.mandante.gmarcados = this.mandanteData[0].gmarcados
+            this.mandante.gsofridos = this.mandanteData[0].gsofridos
+            this.mandante.saldo = this.mandanteData[0].saldo
 
             const infoV = await LeagueClubes.info(this.visitante.id)
-            this.visitante.pontos = infoV.data.pontos
-            this.visitante.jogos = infoV.data.jogos
-            this.visitante.vitorias = infoV.data.vitorias
-            this.visitante.empates = infoV.data.empates
-            this.visitante.derrotas = infoV.data.derrotas
-            this.visitante.golsFeitos = info.data.golsFeitos
-            this.visitante.golsSofridos = infoV.data.golsSofridos
-            this.visitante.saldoGols = infoV.data.saldoGols
+            this.visitanteData = infoV.data
 
+            this.visitante.league_id = this.visitanteData[0].id
+            this.visitante.pontos = this.visitanteData[0].pontos
+            this.visitante.jogos = this.visitanteData[0].jogos
+            this.visitante.vitorias = this.visitanteData[0].vitorias
+            this.visitante.empates = this.visitanteData[0].empates
+            this.visitante.derrotas = this.visitanteData[0].derrotas
+            this.visitante.gmarcados = this.visitanteData[0].gmarcados
+            this.visitante.gsofridos = this.visitanteData[0].gsofridos
+            this.visitante.saldo = this.visitanteData[0].saldo
+            
             this.currentPoints()
-
         },
 
         currentPoints(){
-            this.mandante.jogo += 1
-            this.visitante.jogo += 1
-            this.mandante.golsFeitos += this.jogo.golsMandante
-            this.visitante.golsFeitos += this.jogo.golsVisitante
-            this.mandante.golsSofridos += this.jogo.golsVisitante
-            this.visitante.golsSofridos += this.jogo.golsMandante
-            this.mandante.saldoGols = this.mandante.golsFeitos - this.mandante.golsSofridos
-            this.visitante.saldoGols = this.visitante.golsFeitos - this.visitante.golsSofridos
+            this.mandante.jogos += 1
+            this.visitante.jogos += 1
+            this.mandante.gmarcados += this.jogo.golsMandante
+            this.visitante.gmarcados += this.jogo.golsVisitante
+            this.mandante.gsofridos += this.jogo.golsVisitante
+            this.visitante.gsofridos += this.jogo.golsMandante
+            this.mandante.saldo = this.mandante.gmarcados - this.mandante.gsofridos
+            this.visitante.saldo = this.visitante.gmarcados - this.visitante.gsofridos
 
             
-                if(this.golsMandante == this.golsVisitante) {
+                if(this.jogo.golsMandante == this.jogo.golsVisitante) {
                     this.mandante.pontos += 1
                     this.visitante.pontos += 1
                     this.mandante.empates += 1
                     this.visitante.empates += 1
                 }           
-               else if(this.golsMandante > this.golsVisitante) {
+               else if(this.jogo.golsMandante > this.jogo.golsVisitante) {
                     this.mandante.pontos += 3
                     this.mandante.vitorias += 1
                     this.visitante.derrotas += 1
@@ -413,7 +424,7 @@ export default {
                     this.visitante.pontos += 3
                     this.mandante.derrotas += 1
                     this.visitante.vitorias += 1
-                }           
+                }       
         },
 
         

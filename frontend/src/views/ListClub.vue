@@ -138,12 +138,12 @@ export default {
         
         headers:[
             
-            {text: 'Nome',align: 'center',sortable: false,value:'nome', 
+            {text: 'Nome do Clube',align: 'center',sortable: false,value:'nome', 
              class: "light-blue darked-1 white--text"              
             },
             {text: 'Estado', value: 'estado', align:'center',class: "light-blue darked-1 white--text"
             },    
-            {text: '', value: 'id', align:'center',class: "light-blue darked-1 white--text"
+            {text: 'Edit', value: 'id', align:'end',class: "light-blue darked-1 white--text"
             },    
         ],
     }),

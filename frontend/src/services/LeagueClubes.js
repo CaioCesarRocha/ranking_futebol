@@ -7,7 +7,11 @@ export default {
     },
 
     info: (id) => { // --> pegar as informações dos clubes(P/J/V/E/D)
-        return api.get(`leagueClubes/info${id}`)
+        return api.get(`leagueClubes/info/${id}`)
     },
+
+    update:(id, pontos) =>{
+        return api.put(`leagueClubes/${id}`, pontos)
+    }
     
 }

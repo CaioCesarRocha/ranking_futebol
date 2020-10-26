@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class LeagueClube extends Model {
+    static get table () {
+        return 'league_clube' 
+    }
 }
 
 module.exports = LeagueClube

@@ -17,6 +17,7 @@ class LeagueClubeSchema extends Schema {
       table.integer('gmarcados')
       table.integer('gsofridos')
       table.integer('saldo')
+      table.timestamps()
     })
   }
   down () {
