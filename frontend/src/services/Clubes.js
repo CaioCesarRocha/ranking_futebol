@@ -20,6 +20,10 @@ export default{
     show: (id) => {
         return api.get(`clubes/${id}`)
     },
+
+    info: (id) =>{
+        return api.get(`clubes/info/${id}`)
+    },
     
     search: (searchParams) => {
         return api.get('clubes/search', { params: {

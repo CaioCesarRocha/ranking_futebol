@@ -109,7 +109,6 @@ class LeagueClubeController {
    * @param {Response} ctx.response
    */
   async update ({ params, request}) {
-    console.log(params.id)
     
     const points = await LeagueClube.findOrFail(params.id)
 

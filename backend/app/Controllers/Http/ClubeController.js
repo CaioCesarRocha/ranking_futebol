@@ -127,6 +127,29 @@ class ClubeController {
     return clube
   }
 
+  async info ({ params, request, response, view }) {
+    
+    const nome = await Database
+
+    .raw(`select nome 
+    from clubes
+    where clubes.id = ${params.id}`)
+
+    return nome.rows
+   // try{
+     // const clubes = await Database
+       // .only('nome')
+       // .from('clubes')
+      //  .where('id', params.id)
+
+     // return response.status(200).json(clubes)
+ // }
+  //catch(err){
+     // return response.status(500).json({ message: 'Ocorreu um erro interno' })
+  //}  
+    
+  }
+
   /**
    * Render a form to update an existing clube.
    * GET clubes/:id/edit

@@ -22,6 +22,61 @@ class GameController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    const pagination = request.get()
+
+    let page = pagination.page || 1
+    let itemsPerPage = pagination.itemsPerPage || 10
+    
+    if(typeof pagination.orderBy === 'undefined' || pagination.orderBy == 'null')
+        pagination.orderBy = 'nome_mandante'
+    
+    if(typeof pagination.sortDesc === 'undefined' || pagination.sortDesc == 'null' || pagination.sortDesc == 'false')
+       pagination.sortDesc = 'asc'   
+    else 
+       pagination.sortDesc = 'desc'    
+
+    try{
+      const games = await Database
+        .from('games')   
+        .orderBy(pagination.orderBy, pagination.sortDesc)
+        .where('rodada_id', pagination.idRodada)
+        .paginate(page, itemsPerPage)
+
+      return response.status(200).json(games)
+    }
+    catch(err){
+      return response.status(500).json({ message: 'Ocorreu um erro interno', description: err })
+    } 
+  }
+
+
+  async search ({ request, response }) {
+    const search = request.get()
+
+      let page = search.page || 1
+      let itemsPerPage = search.itemsPerPage || 10
+      
+      if(typeof search.orderBy === 'undefined' || search.orderBy == 'null')
+        search.orderBy = 'nome_mandante'
+      
+      if(typeof search.sortDesc === 'undefined' || search.sortDesc == 'null' || search.sortDesc == 'false')
+        search.sortDesc = 'asc'   
+      else 
+        search.sortDesc = 'desc'  
+          
+      try{
+          const games = await Database
+            .from('games')
+            .where('rodada_id', search.idRodada)
+            .andWhere('nome_mandante', 'ILIKE', '%'+search.term+'%')
+            .orderBy(search.orderBy, search.sortDesc)
+            .paginate(page, itemsPerPage)
+
+          return response.status(200).json(games)
+      }
+      catch(err){
+          return response.status(500).json({ message: 'Ocorreu um erro interno' })
+      }  
   }
 
   /**
@@ -45,12 +100,14 @@ class GameController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const{ league_id, rodada_id, mandante_id, visitante_id, golsMandante, golsVisitante} = await request.post();
+    const{ league_id, rodada_id,nome_mandante, mandante_id, nome_visitante, visitante_id, golsMandante, golsVisitante} = await request.post();
     
     const jogo = await Game.create({
       league_id,
       rodada_id,
+      nome_mandante,
       mandante_id,
+      nome_visitante,
       visitante_id,
       golsMandante,
       golsVisitante

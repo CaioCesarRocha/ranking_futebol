@@ -21,6 +21,7 @@ Route.post('/clubes', 'ClubeController.store');
 Route.get('/clubes/search', 'ClubeController.search');
 Route.get('/clubes/selectClubes', 'ClubeController.selectClubes');
 Route.get('/clubes/:id', 'ClubeController.show');
+Route.get('/clubes/info/:id', 'ClubeController.info');
 Route.put('/clubes/:id', 'ClubeController.update')
 
 Route.get('/leagues', 'LeagueController.index');
@@ -34,6 +35,8 @@ Route.post('/rounds', 'RoundController.store');
 Route.get('/rounds/search', 'RoundController.search');
 Route.get('/rounds/:id', 'RoundController.info');
 
+Route.get('/games', 'GameController.index');
+Route.get('/games/search', 'GameController.search');
 Route.post('/games', 'GameController.store');
 
 Route.get('/leagueClubes/:id', 'LeagueClubeController.show');

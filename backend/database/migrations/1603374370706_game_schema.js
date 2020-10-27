@@ -8,8 +8,10 @@ class GameSchema extends Schema {
     this.create('games', (table) => {
       table.increments()
       table.integer('rodada_id').references('id').inTable('rounds').onUpdate('CASCADE').onDelete('CASCADE')
-      table.integer('league_id').references('id').inTable('leagues').onUpdate('CASCADE').onDelete('CASCADE')     
+      table.integer('league_id').references('id').inTable('leagues').onUpdate('CASCADE').onDelete('CASCADE')
+      table.string('nome_mandante').notNullable()     
       table.integer('mandante_id').notNullable()
+      table.string('nome_visitante').notNullable()
       table.integer('visitante_id').notNullable()
       table.integer('golsMandante').notNullable()
       table.integer('golsVisitante').notNullable()

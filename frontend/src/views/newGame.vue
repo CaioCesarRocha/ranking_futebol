@@ -208,6 +208,7 @@
 import DrawerToolbar from '../components/DrawerToolbar'
 import LeagueClubes from '../services/LeagueClubes'
 import Rounds from '../services/Rounds'
+import Clubes from '../services/Clubes'
 import Games from '../services/Games'
 
 export default {
@@ -219,6 +220,8 @@ export default {
         clubesData: [],
         mandanteData: [],
         visitanteData:[],
+        mandanteNome:[],
+        visitanteNome: [],
         placares:[0,1,2,3,4,5,6,7,8,9,10],
         league:{
             idRodada: '',
@@ -229,8 +232,11 @@ export default {
         jogo:{
             league_id:'',
             rodada_id:'',
+            nome_mandante: '',
             mandante_id: '',
+            nome_visitante: '',
             visitante_id: '',
+
             golsMandante: 0,
             golsVisitante: 0,
         },
@@ -273,12 +279,12 @@ export default {
 
     methods:{
         async checkRoundsParams(){
-            if(typeof this.$route.params.rodada == undefined || this.$route.params.rodada == null)
+            if(typeof this.$route.params.jogos == undefined || this.$route.params.jogos == null)
                 this.getInfoRound()
                 
             else{
                 this.getLeague()
-                this.getClubes()
+                
             }
 
         },
@@ -294,16 +300,17 @@ export default {
         },
 
         async getLeague() {
-           this.league.idLiga = this.$route.params.idLeague
+           this.league.idLiga = this.$route.params.idLiga
            this.league.nome = this.$route.params.nomeLiga
            this.league.rodada = this.$route.params.nomeRodada
            this.league.idRodada = this.$route.params.id
+           this.getClubes()
         },
 
         async getClubes(){   // pega os clubes daquela rodada pertencente a liga
             if(this.getclubes == true)
                 try{
-                    const leagueClubes = await LeagueClubes.show(this.$route.params.idLeague)
+                    const leagueClubes = await LeagueClubes.show(this.league.idLiga)
                     this.clubesData = leagueClubes.data
                 }
                 catch(err){
@@ -356,7 +363,7 @@ export default {
                     this.jogoatual = storedGame.data.id
                     
                     this.clearForm()
-                    //this.$router.replace("/ListGames");
+                    this.$router.push({name: 'ListGames', params: { id: this.league.idRodada }})
                 }
                 catch(err){
                     this.alertData.message = 'O jogo não pode ser criado'
@@ -369,7 +376,16 @@ export default {
             this.mandante.id = this.jogo.mandante_id
             this.visitante.id = this.jogo.visitante_id
 
-            const info = await LeagueClubes.info(this.mandante.id)           
+            const nomeM = await Clubes.info(this.mandante.id) // pegar os nomes no clube na Clubes
+            this.mandanteNome = nomeM.data
+            this.jogo.nome_mandante = this.mandanteNome[0].nome
+
+            const nomeV = await Clubes.info(this.visitante.id)
+            this.visitanteNome = nomeV.data           
+            this.jogo.nome_visitante = this.visitanteNome[0].nome
+
+
+            const info = await LeagueClubes.info(this.mandante.id) // pegar os dados na league_clubes          
             this.mandanteData = info.data
 
             this.mandante.league_id = this.mandanteData[0].id

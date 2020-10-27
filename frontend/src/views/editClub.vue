@@ -148,10 +148,10 @@ export default {
 
     methods:{
         checkClubParams() {
-            if(typeof this.$route.params.club == undefined || this.$route.params.club == null)
+            if(typeof this.$route.params.clube == undefined || this.$route.params.clube == null)
                 this.getClub()
             else{
-                this.setClub(this.$route.params.club)
+                this.setClub(this.$route.params.clube)
             }
 
         },
@@ -161,6 +161,7 @@ export default {
             try{
                     const clube = await Clubes.show(this.$route.params.id)
                     this.setClub(clube.data)
+                    
                     this.gettingClub = this.errorGettingClub = false
                 }
                 catch(err){
