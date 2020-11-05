@@ -28,4 +28,8 @@ export default{
         return api.post('games', game)
     },
 
+    info: (id) => {   //pegar as info do jogo no banco
+        return api.get(`games/info/${id}`)
+    },
+
 }

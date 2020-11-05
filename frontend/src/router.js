@@ -103,6 +103,14 @@ const router = new Router({
                 title: "Jogos",
             }
         },
+        {
+            path: '/editGame/:id',
+            name: 'editGame',
+            component: () => import('./views/editGame.vue'),
+            meta: {
+                title: "Editar Jogo",
+            }
+        },
 
 
     ]

@@ -81,7 +81,7 @@
                             <template v-slot:[`item.id`]="{ item }" >
                                 <v-layout justify-center>
                                     <v-icon class="mr-0" color="grey darken-4" v-model="item.id" medium>
-                                       mdi-shield-search
+                                       mdi-calendar-plus
                                     </v-icon>
                                 </v-layout>
                             </template>                             

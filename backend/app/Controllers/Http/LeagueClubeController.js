@@ -76,16 +76,9 @@ class LeagueClubeController {
 
       return response.status(200).json(infoClube)
   }
-  catch(err){
+    catch(err){
       return response.status(500).json({ message: 'Ocorreu um erro interno' })
-  }  
-
-   //const infoClube = await Database
-    //.raw(`select c.pontos, c.vitorias, c.empates, c.derrotas, c.jogos, c.gmarcados, c.gsofridos, c.saldo
-      //from league_clube as c
-      ///where c.clube_id = ${params.id}`)
-
-    //return infoClube.rows  
+    }  
   }
 
   /**

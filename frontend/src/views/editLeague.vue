@@ -244,3 +244,15 @@ export default {
     }
 }
 </script>
+
+<style>
+.importAlert{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+.errorGettingSetorAlert{
+    width: 100%;
+}
+</style>

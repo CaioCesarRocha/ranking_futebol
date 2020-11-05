@@ -214,14 +214,12 @@ export default {
             this.rodada.idRodada = rodadaData.id
             this.rodada.idLiga = rodadaData.league_id
             this.rodada.nomeLiga = rodadaData.league_nome
-            this.rodada.rodadaNome = rodadaData.nome
-            
+            this.rodada.nomeRodada = rodadaData.nome
             this.getGames()
         },
         
 
         async getGames(){
-             this.isLoading = true
            try{                           
                 const Params = {
                     page: this.paginate.page,
@@ -307,11 +305,11 @@ export default {
             this.getGames()
         },
          newGame(val){
-             this.$router.push({name: 'newGame', params: { id: this.rodada.idRodada, nomeLiga:this.rodada.nomeLiga, nomeRodada: this.rodada.nomeRodada, idLiga:this.rodada.idLiga, jogos: val}})
+             this.$router.push({name: 'newGame', params: { id: val.id, nomeLiga:this.rodada.nomeLiga, nomeRodada: this.rodada.nomeRodada, idLiga:this.rodada.idLiga, idRodada: this.rodada.idRodada, jogo: val}})
          }, 
 
          handleClickRow(val) {
-            this.$router.push({name: 'editGame', params: { id: this.rodada.idRodada, idLeague: this.rodada.idLiga, nomeLiga:this.rodada.nomeLiga, nomeRodada: this.rodada.nomeRodada, idJogo: val.id, jogos: val}})
+            this.$router.push({name: 'editGame', params: { id: val.id, idLiga: this.rodada.idLiga, nomeLiga:this.rodada.nomeLiga, nomeRodada: this.rodada.nomeRodada, idRodada: this.rodada.idRodada, jogo: val}})
         }
         
     },

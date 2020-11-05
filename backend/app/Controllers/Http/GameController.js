@@ -129,6 +129,13 @@ class GameController {
   async show ({ params, request, response, view }) {
   }
 
+  async info ({ params, request, response, view }) {
+
+    const game = await Game.findOrFail(params.id)
+
+    return game
+}
+
   /**
    * Render a form to update an existing game.
    * GET games/:id/edit
