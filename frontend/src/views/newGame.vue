@@ -341,12 +341,12 @@ export default {
         async creat(){
             this.showCriar = false
 
-            if(this.mandante.id != this.jogo.mandante_id || this.golsM != this.jogo.golsMandante || this. visitante.id != this.jogo.visitante_id || this.golsV != this.jogo.golsVisitante)
-                this.getInfoClubes()
+            if(this.mandante.id != this.jogo.mandante_id || this.golsM != this.jogo.golsMandante || this. visitante.id != this.jogo.visitante_id || this.golsV != this.jogo.golsVisitante){
+                await this.getInfoClubes()                           
+            }              
 
               if(this.ClubesIguais == false) 
-                    try{  
-                                    
+                    try{                                     
                         const storedGame = await Games.store(this.jogo)
                         await LeagueClubes.update(this.mandante.league_id, this.mandante)
                         await LeagueClubes.update(this.visitante.league_id, this.visitante)
@@ -397,6 +397,7 @@ export default {
             this.mandante.gmarcados = this.mandanteData[0].gmarcados
             this.mandante.gsofridos = this.mandanteData[0].gsofridos
             this.mandante.saldo = this.mandanteData[0].saldo
+            
 
             const infoV = await LeagueClubes.info(this.visitante.id)
             this.visitanteData = infoV.data
@@ -423,7 +424,6 @@ export default {
             this.visitante.gsofridos += this.jogo.golsMandante
             this.mandante.saldo = this.mandante.gmarcados - this.mandante.gsofridos
             this.visitante.saldo = this.visitante.gmarcados - this.visitante.gsofridos
-
             
                 if(this.jogo.golsMandante == this.jogo.golsVisitante) {
                     this.mandante.pontos += 1
@@ -448,7 +448,32 @@ export default {
             if(this.jogo.mandante_id == this.jogo.visitante_id)
                 this.ClubesIguais = true
         },
-        
+        clearInfoClubes(){
+          this.mandante ={
+            league_id: '',
+            id: '',
+            pontos: '',
+            jogos: '',
+            vitorias: '',
+            empates: '',
+            derrotas: '',
+            gmarcados: '',
+            gsofridos: '',
+            saldo: ''
+        },
+        this.visitante = {
+            league_id:'',
+            id: '',
+            pontos: '',
+            jogos: '',
+            vitorias: '',
+            empates: '',
+            derrotas: '',
+            gmarcados: '',
+            gsofridos: '',
+            saldo: '', 
+        }
+    }, 
         clearForm() {
             this.jogo = {
                 league_id:'',
@@ -467,15 +492,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.importAlert{
-    position: fixed;
-    bottom: 0;
-    right: 0;
-}
-
-.errorGettingSetorAlert{
-    width: 100%;
-}
-</style>

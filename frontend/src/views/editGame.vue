@@ -200,8 +200,6 @@ export default {
     },
 
     data:()=>({
-        mandante: [],
-        visitante:[],
         placares:[0,1,2,3,4,5,6,7,8,9,10],
         rodada:{
             nome: '',
@@ -220,6 +218,30 @@ export default {
             visitante_id: '',
             golsMandante: '',
             golsVisitante: '',
+        },
+        mandante:{
+            league_id: '',
+            id: '',
+            pontos: '',
+            jogos: '',
+            vitorias: '',
+            empates: '',
+            derrotas: '',
+            gmarcados: '',
+            gsofridos: '',
+            saldo: ''
+        },
+        visitante:{
+            league_id:'',
+            id: '',
+            pontos: '',
+            jogos: '',
+            vitorias: '',
+            empates: '',
+            derrotas: '',
+            gmarcados: '',
+            gsofridos: '',
+            saldo: ''
         },
         alertData: {
             show: false,
@@ -242,24 +264,29 @@ export default {
             }
         },
 
-        setGame(jogoData){
-           this.jogo.league_id = jogoData.idLiga
-           this.jogo.rodada_id = jogoData.idRodada
+        setGame(jogoData){ // passa pelos routes(val) ou pelo getGame quando atualizar
            this.jogo.mandante_id = jogoData.mandante_id
            this.jogo.visitante_id = jogoData.visitante_id
+           this.jogo.golsMandante = jogoData.golsMandante
+           this.jogo.golsVisitante =jogoData.golsVisitante
            this.rodada.golsMandante = jogoData.golsMandante
            this.rodada.golsVisitante = jogoData.golsVisitante
            this.rodada.mandante = jogoData.nome_mandante
-           this.rodada.visitante = jogoData.nome_visitante           
+           this.rodada.visitante = jogoData.nome_visitante          
+           this.getPointsClubes()          
         },
 
         setRound(){    //passando os valores pelo routes
             this.rodada.nome = this.$route.params.nomeRodada    
-            this.rodada.liga = this.$route.params.nomeLiga         
+            this.rodada.liga = this.$route.params.nomeLiga
+            this.jogo.league_id = this.$route.params.idLiga
+            this.jogo.rodada_id = this.$route.params.idRodada
         },
         setRounds(roundData){  //pegando os valores no banco quando atualizar
             this.rodada.nome = roundData.nome    
             this.rodada.liga = roundData.league_nome
+            this.jogo.league_id = roundData.league_id
+            this.jogo.rodada_id = roundData.id
         },
 
        async getGame(){
@@ -281,34 +308,122 @@ export default {
             this.setRounds(round.data)
         },
 
-       async confirmCreate(){  
-            this.golsM = this.jogo.golsMandante
-            this.golsV = this.jogo.golsVisitante
+        async getPointsClubes(){
+            const info = await LeagueClubes.info(this.jogo.mandante_id) // pegar os dados league_clubes        
+            this.mandanteData = info.data
+
+            this.mandante.league_id = this.mandanteData[0].id
+            this.mandante.pontos = this.mandanteData[0].pontos
+            this.mandante.jogos = this.mandanteData[0].jogos
+            this.mandante.vitorias = this.mandanteData[0].vitorias
+            this.mandante.empates = this.mandanteData[0].empates
+            this.mandante.derrotas = this.mandanteData[0].derrotas
+            this.mandante.gmarcados = this.mandanteData[0].gmarcados
+            this.mandante.gsofridos = this.mandanteData[0].gsofridos
+            this.mandante.saldo = this.mandanteData[0].saldo
+
+            const infoV = await LeagueClubes.info(this.jogo.visitante_id)
+            this.visitanteData = infoV.data
+
+            this.visitante.league_id = this.visitanteData[0].id
+            this.visitante.pontos = this.visitanteData[0].pontos
+            this.visitante.jogos = this.visitanteData[0].jogos
+            this.visitante.vitorias = this.visitanteData[0].vitorias
+            this.visitante.empates = this.visitanteData[0].empates
+            this.visitante.derrotas = this.visitanteData[0].derrotas
+            this.visitante.gmarcados = this.visitanteData[0].gmarcados
+            this.visitante.gsofridos = this.visitanteData[0].gsofridos
+            this.visitante.saldo = this.visitanteData[0].saldo
+        
+            this.currentPoints()
+        },
+
+        currentPoints(){    //-> tira a pontuação atual dos clubes naquele jogo
+            this.mandante.jogos += -1
+            this.visitante.jogos += -1
+            this.mandante.gmarcados += -this.jogo.golsMandante
+            this.visitante.gmarcados += -this.jogo.golsVisitante
+            this.mandante.gsofridos += -this.jogo.golsVisitante
+            this.visitante.gsofridos += -this.jogo.golsMandante
+            this.mandante.saldo = this.mandante.gmarcados - this.mandante.gsofridos
+            this.visitante.saldo = this.visitante.gmarcados - this.visitante.gsofridos
+
+            if(this.jogo.golsMandante == this.jogo.golsVisitante) {
+                    this.mandante.pontos += -1
+                    this.visitante.pontos += -1
+                    this.mandante.empates += -1
+                    this.visitante.empates += -1
+                    
+                }           
+               else if(this.jogo.golsMandante > this.jogo.golsVisitante) {
+                    this.mandante.pontos += -3
+                    this.mandante.vitorias += -1
+                    this.visitante.derrotas += -1
+                }
+                else{
+                    this.visitante.pontos += -3
+                    this.mandante.derrotas += -1
+                    this.visitante.vitorias += -1
+                }
+        },
+
+        setNewPoints(){ // -> seta a nova pontuação do clube naquele jogo
+            this.mandante.jogos += 1
+            this.visitante.jogos += 1
+            this.mandante.gmarcados += this.rodada.golsMandante
+            this.visitante.gmarcados += this.rodada.golsVisitante
+            this.mandante.gsofridos += this.rodada.golsVisitante
+            this.visitante.gsofridos += this.rodada.golsMandante
+            this.mandante.saldo = this.mandante.gmarcados - this.mandante.gsofridos
+            this.visitante.saldo = this.visitante.gmarcados - this.visitante.gsofridos
+
+            
+                if(this.rodada.golsMandante == this.rodada.golsVisitante) {
+                    this.mandante.pontos += 1
+                    this.visitante.pontos += 1
+                    this.mandante.empates += 1
+                    this.visitante.empates += 1
+                }           
+               else if(this.rodada.golsMandante > this.rodada.golsVisitante) {
+                    this.mandante.pontos += 3
+                    this.mandante.vitorias += 1
+                    this.visitante.derrotas += 1
+                }
+                else{
+                    this.visitante.pontos += 3
+                    this.mandante.derrotas += 1
+                    this.visitante.vitorias += 1
+                }
+        },
+
+
+       async confirmEdit(){  
+            this.golsM = this.rodada.golsMandante
+            this.golsV = this.rodada.golsVisitante
 
             this.alertData.message ='Confirma estes dados para salvar o jogo?'
             this.alertData.type = 'success'
             this.alertData.show = true
             this.showCriar = true
-            this.getInfoClubes()           
+            this.setNewPoints()           
         },
 
-        async creat(){
+        async edit(){
             this.showCriar = false
-
-            if(this.golsM != this.jogo.golsMandante || this.golsV != this.jogo.golsVisitante)
-                this.getCurrentGoals()
-
-              if(this.ClubesIguais == false) 
-                    try{  
-                                    
-                        const storedGame = await Games.store(this.jogo)
+            
+            if(this.golsM != this.rodada.golsMandante || this.golsV != this.rodada.golsVisitante){
+                await this.getPointsClubes()
+                await this.setNewPoints()
+            }
+             try{                                     
+                        //const storedGame = await Games.store(this.jogo)
                         await LeagueClubes.update(this.mandante.league_id, this.mandante)
                         await LeagueClubes.update(this.visitante.league_id, this.visitante)
 
                         this.alertData.message ='Jogo  adicionado com sucesso.'
                         this.alertData.type = 'success'
                         this.alertData.show = true
-                        this.jogoatual = storedGame.data.id
+                        //this.jogoatual = storedGame.data.id
                         
                         this.clearForm()
                         this.$router.push({name: 'ListGames', params: { id: this.league.idRodada }})
@@ -319,17 +434,12 @@ export default {
                             this.alertData.type = 'error'
                             this.alertData.show = true                
                     }
-            else{
-                    this.alertData.message = 'O jogo não pode ser criado com times iguais.'
-                    this.alertData.type = 'error'
-                    this.alertData.show = true
-                }    
+
         },
 
-        getCurrentGoals(){
-            this.golsM = this.jogo.golsMandante
-            this.golsV = this.jogo.golsVisitante
-        }
+        clearForm(){
+
+        },
 
     },
 
@@ -339,14 +449,3 @@ export default {
 }
 </script>
 
-<style>
-.importAlert{
-    position: fixed;
-    bottom: 0;
-    right: 0;
-}
-
-.errorGettingSetorAlert{
-    width: 100%;
-}
-</style>

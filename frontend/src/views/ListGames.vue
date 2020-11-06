@@ -305,7 +305,7 @@ export default {
             this.getGames()
         },
          newGame(val){
-             this.$router.push({name: 'newGame', params: { id: val.id, nomeLiga:this.rodada.nomeLiga, nomeRodada: this.rodada.nomeRodada, idLiga:this.rodada.idLiga, idRodada: this.rodada.idRodada, jogo: val}})
+             this.$router.push({name: 'newGame', params: { id: this.rodada.idRodada, nomeLiga:this.rodada.nomeLiga, nomeRodada: this.rodada.nomeRodada, idLiga:this.rodada.idLiga, jogo: val}})
          }, 
 
          handleClickRow(val) {

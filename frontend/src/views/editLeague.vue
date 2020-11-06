@@ -219,6 +219,7 @@ export default {
                 this.alertData.message = 'A liga: ' + this.league.nome + ' foi deletada com sucesso.'
                 this.alertData.type = 'success'
                 this.alertData.show = true
+                this.$router.replace("/ListLeague");
             }
             catch(err){
                 this.alertDelete.show = false
@@ -245,14 +246,3 @@ export default {
 }
 </script>
 
-<style>
-.importAlert{
-    position: fixed;
-    bottom: 0;
-    right: 0;
-}
-
-.errorGettingSetorAlert{
-    width: 100%;
-}
-</style>
