@@ -210,6 +210,7 @@ export default {
             golsVisitante: '',
         },
         jogo:{
+            id: '',
             league_id:'',
             rodada_id:'',
             nome_mandante: '',
@@ -265,6 +266,7 @@ export default {
         },
 
         setGame(jogoData){ // passa pelos routes(val) ou pelo getGame quando atualizar
+           this.jogo.id = this.$route.params.id
            this.jogo.mandante_id = jogoData.mandante_id
            this.jogo.visitante_id = jogoData.visitante_id
            this.jogo.golsMandante = jogoData.golsMandante
@@ -286,7 +288,7 @@ export default {
             this.rodada.nome = roundData.nome    
             this.rodada.liga = roundData.league_nome
             this.jogo.league_id = roundData.league_id
-            this.jogo.rodada_id = roundData.id
+            this.jogo.rodada_id = roundData.id        
         },
 
        async getGame(){
@@ -415,25 +417,23 @@ export default {
                 await this.getPointsClubes()
                 await this.setNewPoints()
             }
-             try{                                     
-                        //const storedGame = await Games.store(this.jogo)
-                        await LeagueClubes.update(this.mandante.league_id, this.mandante)
-                        await LeagueClubes.update(this.visitante.league_id, this.visitante)
+                try{                                   
+                    await Games.update(this.jogo.id, this.rodada)
+                    await LeagueClubes.update(this.mandante.league_id, this.mandante)
+                    await LeagueClubes.update(this.visitante.league_id, this.visitante)
 
-                        this.alertData.message ='Jogo  adicionado com sucesso.'
-                        this.alertData.type = 'success'
-                        this.alertData.show = true
-                        //this.jogoatual = storedGame.data.id
-                        
-                        this.clearForm()
-                        this.$router.push({name: 'ListGames', params: { id: this.league.idRodada }})
-                    }
-                    catch(err){
-                                                        
-                            this.alertData.message = 'O jogo não pode ser criado'
-                            this.alertData.type = 'error'
-                            this.alertData.show = true                
-                    }
+                    this.alertData.message ='Jogo  adicionado com sucesso.'
+                    this.alertData.type = 'success'
+                    this.alertData.show = true
+
+                    this.clearForm()
+                    this.$router.push({name: 'ListGames', params: { id: this.jogo.rodada_id }})
+                }
+                catch(err){                                                     
+                    this.alertData.message = 'O jogo não pode ser editado'
+                    this.alertData.type = 'error'
+                    this.alertData.show = true                
+                }
 
         },
 

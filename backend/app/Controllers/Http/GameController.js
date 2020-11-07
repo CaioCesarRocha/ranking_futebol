@@ -157,6 +157,15 @@ class GameController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    const goals = await Game.findOrFail(params.id)
+
+    const data = request.only([ "golsMandante","golsVisitante"])
+
+    goals.merge(data)
+
+    await goals.save()
+
+    return goals
   }
 
   /**

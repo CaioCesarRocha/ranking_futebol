@@ -32,4 +32,8 @@ export default{
         return api.get(`games/info/${id}`)
     },
 
+    update:(id, goals) =>{
+        return api.put(`games/${id}`, goals)
+    }
+
 }
