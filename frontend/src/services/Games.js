@@ -34,6 +34,10 @@ export default{
 
     update:(id, goals) =>{
         return api.put(`games/${id}`, goals)
+    },
+
+    delete: (id) => {
+        return api.delete(`games/${id}`)
     }
 
 }

@@ -17,7 +17,7 @@
                     xl="8"
                     class="mt-0"
                 >
-                    <v-form @submit.prevent="confirmEdit">
+                    <v-form >
                             <v-card class="elevation-12 pb-4 mt-0">
                                 <v-container fluid class="mt-3 ">
                                     <v-card-title class="ma-0 ml-3 pa-0 mt-0 title font-weight-bold accent--text">
@@ -161,9 +161,35 @@
                                     
 
                                    </v-row>
-                                    <v-card-actions class=" mt-0 justify-center text-center">
-                                        <v-btn type="submit" class="px-3" color="success">Editar Jogo</v-btn>
-                                    </v-card-actions>
+                                    <v-row
+                                    align="center"
+                                    justify="center"
+                                    >
+                                        <v-col
+                                        cols="4"
+                                        >
+                                            <v-card-actions class=" mt-0 justify-center text-center">
+                                                <v-btn 
+                                                @click="confirmEdit"
+                                                class="px-3 mt-3" color="info"
+                                                >
+                                                    Editar novo placar
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-col>
+                                        <v-col
+                                        cols="4"
+                                        >
+                                            <v-card-actions class=" mt-0 justify-center text-center">
+                                                <v-btn 
+                                                @click="confirmDelete"
+                                                class="px-3 mt-3" color="error"
+                                                >
+                                                    Deletar Jogo
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-col>
+                                    </v-row>
                                 </v-container>
                             </v-card>
                         </v-form>
@@ -178,7 +204,10 @@
         dismissible
         >
             {{alertData.message}}
-            <v-btn v-if="showCriar == true" @click="edit" type="submit" class="px-3 mt0" color="info"> 
+            <v-btn v-if="showCriar == true" @click="edit" type="submit" class="ml-3 px-3 mt0" color="info"> 
+                OK
+            </v-btn>
+            <v-btn v-if="showDelete == true" @click="deleteGame" type="submit" class="ml-3 px-3 mt0" color="info"> 
                 OK
             </v-btn>
         </v-alert>
@@ -249,6 +278,8 @@ export default {
             message: '',
             type: 'success'
         },
+        editing: false,
+        showDelete: false,
         showCriar: '',
         ClubesIguais: '',
         golsM: '',
@@ -396,16 +427,17 @@ export default {
                     this.mandante.derrotas += 1
                     this.visitante.vitorias += 1
                 }
+            this.editing = true;
         },
-
 
        async confirmEdit(){  
             this.golsM = this.rodada.golsMandante
             this.golsV = this.rodada.golsVisitante
 
-            this.alertData.message ='Confirma estes dados para salvar o jogo?'
+            this.alertData.message ='Confirma estes dados como novo placar do jogo?'
             this.alertData.type = 'success'
             this.alertData.show = true
+            this.showDelete = false
             this.showCriar = true
             this.setNewPoints()           
         },
@@ -435,6 +467,39 @@ export default {
                     this.alertData.show = true                
                 }
 
+        },
+        async confirmDelete(){
+            await this.getPointsClubes()
+
+            this.alertData.message ='Confirma a exclusão deste jogo?'
+            this.alertData.type = 'error'
+            this.alertData.show = true
+            this.showCriar = false
+            this.showDelete = true
+        },
+
+        async deleteGame(){
+            if(this.editing == true){
+                this.getPointsClubes()
+            }
+            try{
+                await LeagueClubes.update(this.mandante.league_id, this.mandante)
+                await LeagueClubes.update(this.visitante.league_id, this.visitante)
+                await Games.delete(this.jogo.id)
+
+                this.alertData.message ='Jogo  excluído com sucesso.'
+                this.alertData.type = 'success'
+                this.alertData.show = true
+
+                this.clearForm()
+                this.$router.push({name: 'ListGames', params: { id: this.jogo.rodada_id }})  
+            }
+            catch(err){
+                this.alertData.message = 'O jogo não pode ser excluído'
+                this.alertData.type = 'error'
+                this.alertData.show = true   
+            }
+            
         },
 
         clearForm(){

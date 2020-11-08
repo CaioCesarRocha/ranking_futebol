@@ -40,6 +40,7 @@ Route.get('/games/search', 'GameController.search');
 Route.get('/games/info/:id', 'GameController.info');
 Route.post('/games', 'GameController.store');
 Route.put('/games/:id', 'GameController.update');
+Route.delete('/games/:id', 'GameController.destroy');
 
 Route.get('/leagueClubes/:id', 'LeagueClubeController.show');
 Route.get('/leagueClubes/info/:id', 'LeagueClubeController.info');

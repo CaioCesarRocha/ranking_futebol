@@ -177,6 +177,11 @@ class GameController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const deleteGame = await Database
+    
+    .raw(`delete from games as g
+    where g.id = ${params.id}`)
+    return deleteGame.rows
   }
 }
 
