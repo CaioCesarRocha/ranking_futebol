@@ -17,11 +17,11 @@
                     xl="8"
                     class="mt-0"
                 >
-                    <v-form @submit.prevent="createRound">
+                    <v-form @submit.prevent="editRound">
                             <v-card class="elevation-12 pb-4 mt-0">
                                 <v-container fluid class="mt-3 ">
                                     <v-card-subtitle class="ma-0 ml-3 pa-0 mt-0 title font-weight-bold accent--text">
-                                        {{league.nome}}
+                                        {{rodada.liga}}
                                     </v-card-subtitle>                                                                 <v-divider
                                     class="mt-0 my-5"   
                                     />
@@ -39,7 +39,7 @@
                                         />
                                     </v-card-text> 
                                     <v-card-actions class=" mt-0 justify-center text-center">
-                                        <v-btn type="submit" class="px-3 mt-3" color="success">ADD Rodada</v-btn>
+                                        <v-btn type="submit" class="px-3 mt-3" color="success">Confirmar</v-btn>
                                     </v-card-actions>
                                 </v-container>
                             </v-card>
@@ -56,39 +56,30 @@
         >
             {{alertData.message}}
         </v-alert> 
-    </div>  
+    </div>
 </template>
 
 <script>
 import DrawerToolbar from '../components/DrawerToolbar'
 import {required} from 'vuelidate/lib/validators'
-import Leagues from '../services/Leagues'
 import Rounds from '../services/Rounds'
 
 export default {
     components:{
         DrawerToolbar,
-    },
 
-    data:()=>({
-        league:{
+    },
+    data: () =>({
+        rodada:{
             id: '',
             nome: '',
-            formato: '',
-            numParticipantes: '',
-            selectedClubes:[]
-        },
-        rodada:{
-            nome:'',
-            league_id:'',
-            league_nome: ''
-            
+            liga: '',
         },
         alertData: {
             show: false,
             message: '',
             type: 'success'
-        } 
+        },
     }),
 
     validations:{
@@ -108,62 +99,36 @@ export default {
         },
     },
 
-
     methods:{
-        async getLeague() {
-            try{              
-                const league = await Leagues.show(this.$route.params.id)
-                this.setLeague(league.data)
-                 //this.gettingLeague = this.errorGettingLeague = false
-            }
-            catch(err){
-                //this.gettingLeague = false
-                //this.errorGettingLeague = true                   
-                if(err.response.status == 404)
-                    this.errorMessage = 'Liga não encontrada'
-                else
-                    this.errorMessage = 'Houve um problema ao carregar dados desta liga' 
-            }
+        setRoundData(){
+            this.rodada.id = this.$route.params.id
+            this.rodada.nome = this.$route.params.nome
+            this.rodada.liga = this.$route.params.liga
+            this.rodada.league_id = this.$route.params.league_id
         },
 
-        setLeague(leagueData){
-            this.rodada.league_id = leagueData.id;
-            this.rodada.league_nome = leagueData.nome;
-            this.league.nome = leagueData.nome;
-            this.league.formato = leagueData.formato;
-            this.league.numParticipantes = leagueData.numParticipantes;
-            console.log(this.rodada.league_id)    
-        },
-
-        async createRound(){
-            
+        async editRound(){
             this.$v.$touch()
 
             if(this.$v.$invalid) {
                 return 
             }
-            else{
-                try{
-                    this.rodada.nome = await this.upperString(this.rodada.nome)
-                    const storedRound = await Rounds.store(this.rodada)
+            try{
+                const round = await Rounds.update(this.rodada.id, this.rodada)
 
-                    this.alertData.message ='A ' + storedRound.data.nome +' da liga '+ this.league.nome +' foi criado(a) com sucesso'
-                    this.alertData.type = 'success'
-                    this.alertData.show = true
+                this.alertData.message ='A ' + round.data.nome +' da liga '+ this.rodada.liga +' foi editado(a) com sucesso'
+                this.alertData.type = 'success'
+                this.alertData.show = true
                      
-                    //this.clearForm()                    
-                    this.$router.push({name: 'ListRounds', params: { id: this.rodada.league_id, nome: this.rodada.league_nome}})
-                }
-                catch(err){
-                    this.alertData.message = 'A Rodada não pode ser criada'
-                    this.alertData.type = 'error'
-                    this.alertData.show = true
-                }
+                //this.clearForm()                    
+                this.$router.push({name: 'ListRounds', params: { id: this.rodada.league_id, nome: this.rodada.liga}})
             }
-        },
-
-         upperString(string) {
-            return string.toUpperCase()
+            catch(err){
+                this.alertData.message = 'A Rodada não pode ser editada'
+                this.alertData.type = 'error'
+                this.alertData.show = true
+            }
+            
         },
 
         clearForm() {
@@ -172,12 +137,10 @@ export default {
             }
             this.$v.$reset()
         },
-
     },
 
     mounted(){
-        this.clearForm()
-        this.getLeague()
+        this.setRoundData()
     }
 }
 </script>

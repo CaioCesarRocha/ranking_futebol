@@ -63,7 +63,7 @@ class LeagueClubeController {
     from clubes as c 
     inner join league_clube as lc 
     on lc.clube_id = c.id
-    where lc.league_id = ${params.id} `)
+    where lc.league_id = ${params.id} order by c.nome`)
     return nomeClubes.rows
   }
 

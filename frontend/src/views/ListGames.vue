@@ -16,6 +16,15 @@
                 <v-card class="elevation-4 mx-3 mb-2 pb-0">
                 </v-card>
                     <v-card class="elevation-4 mt-5 mx-3">
+                        <v-card-subtitle
+                                align="center"
+                                class=" ml-0 title font-weight-bold accent--text">
+                                    {{rodada.nomeLiga}} - {{rodada.nomeRodada}}
+                                </v-card-subtitle>
+
+                                <v-divider
+                                    class="mt-0 my-3"   
+                                />
                         <v-card-title 
                         v-show="!error&&!isLoading"
                         class="pb-0 mb-0">
@@ -27,6 +36,8 @@
                             xl="8"
                             class="my-0 py-0 px-1"
                             >
+                                
+
                                 <v-text-field
                                 v-model="searchText"
                                 outlined
@@ -34,7 +45,7 @@
                                 append-icon="mdi-magnify"
                                 :label="searchLabel"
                                 single-line
-                                class="pb-0 mb-0"
+                                class="mt-2 pb-0 mb-0"
                                 clearable
                                 @click:clear="clearSearch"
                                 @click:append="makeSearch"
@@ -44,7 +55,7 @@
 
 
                         </v-card-title>
-                       
+                        
                         <v-data-table
                             v-show="!error"
                             :server-items-length="paginate.itemsLength"
@@ -91,7 +102,7 @@
 
 
                             <template v-slot:[`item.id`]="{ item }" >
-                                <v-layout justify-end>
+                                <v-layout justify-center>
                                     <v-icon class="mr-0" color="grey darken-4" v-model="item.id" medium>
                                        mdi-clipboard-edit-outline
                                     </v-icon>
@@ -115,12 +126,37 @@
                             </v-col>
                         </v-row>
                     </v-alert>
-                    <div class="mx-3 mt-3 ml-3 mb-3 md-6">  
-                        <v-btn class="md-6 px-4" color="accent" @click="newGame"> 
-                            Adicionar Jogos                         
-                        <v-icon right medium>mdi-playlist-plus</v-icon>
-                        </v-btn>
-                    </div>  
+                    <v-row
+                    align="center"
+                    justify="center"
+                    >
+                        <v-col
+                        cols="6"
+                        >
+                            <v-card-actions class=" mt-0 justify-start text-center">
+                                <v-btn 
+                                @click="newGame"
+                                class="px-3 mt-0" color="info"
+                                >
+                                    Add Novo Jogo
+                                    <v-icon right medium>mdi-playlist-plus</v-icon>
+                                </v-btn>
+                            </v-card-actions>
+                        </v-col>
+                        <v-col
+                        cols="6"
+                        >
+                            <v-card-actions class=" mt-0 justify-end text-center">
+                                <v-btn 
+                                @click="editRound"
+                                class="px-3 mt-0" color="accent"
+                                >
+                                    Editar Rodada
+                                    <v-icon right medium>mdi-playlist-edit</v-icon>
+                                </v-btn>
+                            </v-card-actions>
+                        </v-col>
+                    </v-row>    
                 </v-col>
             </v-row>
 </div>
@@ -176,7 +212,7 @@ export default {
             },
             {text: 'Final', value: 'golsVisitante', align:'start',class: "light-blue darked-1 white--text"
             },      
-            {text: 'Editar Jogo', value: 'id', align:'end',class: "light-blue darked-1 white--text"
+            {text: 'Editar Jogo', value: 'id', align:'center',class: "light-blue darked-1 white--text"
             },    
         ]
 
@@ -184,7 +220,7 @@ export default {
 
     computed:{
         searchLabel() {
-            return 'Digite o nome da clube' 
+            return 'Digite o nome do clube' 
         },
     },
 
@@ -303,6 +339,9 @@ export default {
             this.searchText = ''
             this.paginate.page = 1
             this.getGames()
+        },
+        editRound(){
+            this.$router.push({name: 'editRound', params:{id: this.rodada.idRodada, nome: this.rodada.nomeRodada, liga: this.rodada.nomeLiga, league_id: this.rodada.idLiga}})
         },
          newGame(val){
              this.$router.push({name: 'newGame', params: { id: this.rodada.idRodada, nomeLiga:this.rodada.nomeLiga, nomeRodada: this.rodada.nomeRodada, idLiga:this.rodada.idLiga, jogo: val}})

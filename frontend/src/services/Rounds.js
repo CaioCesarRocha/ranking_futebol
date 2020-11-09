@@ -28,6 +28,10 @@ export default{
         return api.post('rounds', round)
     },
 
+    update:(id, round) =>{
+        return api.put(`rounds/${id}`, round)
+    },
+
     info: (id) => {
         return api.get(`rounds/${id}`)
     },

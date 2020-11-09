@@ -88,6 +88,14 @@ const router = new Router({
             }
         },
         {
+            path: '/editRound/:id/:nome/:liga/:league_id',
+            name: 'editRound',
+            component: () => import('./views/editRound.vue'),
+            meta: {
+                title: "Editar Rodada",
+            }
+        },
+        {
             path: '/newGame/:id',
             name: 'newGame',
             component: () => import('./views/newGame.vue'),
@@ -104,7 +112,7 @@ const router = new Router({
             }
         },
         {
-            path: '/editGame/:id',
+            path: '/editGame/:id/',
             name: 'editGame',
             component: () => import('./views/editGame.vue'),
             meta: {

@@ -103,12 +103,26 @@
                             </v-col>
                         </v-row>
                     </v-alert>
-                    <div class="mx-3 mt-3 ml-3 mb-3 md-6">  
-                        <v-btn class="md-6 px-4" color="accent" @click="newRound"> 
-                            Nova Rodada                         
-                        <v-icon right medium>mdi-playlist-plus</v-icon>
-                        </v-btn>
-                    </div>  
+
+                    <v-row
+                    align="center"
+                    justify="center"
+                    >
+                        <v-col
+                        cols="12"
+                        >
+                            <v-card-actions class=" mt-0 justify-start text-center ">
+                                <v-btn 
+                                @click="newRound"
+                                class="px-3 mt-0" color="accent"
+                                >
+                                    Nova Rodada
+                                    <v-icon right medium>mdi-playlist-plus</v-icon>
+                                </v-btn>
+                            </v-card-actions>
+                        </v-col>
+
+                    </v-row>  
                 </v-col>
             </v-row>
 
@@ -169,7 +183,8 @@ export default {
     methods:{
         getLeague(){
             this.league.id = this.$route.params.id
-            this.league.nome = this.$route.params.nome          
+            this.league.nome = this.$route.params.nome
+            console.log(this.league.id)          
         },
 
         async getRounds(){
@@ -193,11 +208,8 @@ export default {
                     searchParams = Object.assign(searchParams, Params)
                     const page =  await Rounds.search(searchParams)                     
                     this.setPage(page.data)                
-
                 } 
                 else {
-                    //console.log(rodadaLeagueParams)
-                    //paginateParams = Object.assign(paginateParams, rodadaLeagueParams)
                     const page = await Rounds.index(Params)
                     this.setPage(page.data)                                   
                 }
@@ -263,7 +275,8 @@ export default {
             this.paginate.page = 1
             this.getRounds()
         },
-         newRound(){
+        
+        newRound(){
             this.$router.push({name: 'newRound', params: { id: this.league.id}})
         },
         

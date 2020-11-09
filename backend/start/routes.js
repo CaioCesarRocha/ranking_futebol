@@ -34,6 +34,7 @@ Route.get('/rounds', 'RoundController.index');
 Route.post('/rounds', 'RoundController.store');
 Route.get('/rounds/search', 'RoundController.search');
 Route.get('/rounds/:id', 'RoundController.info');
+Route.put('/rounds/:id', 'RoundController.update');
 
 Route.get('/games', 'GameController.index');
 Route.get('/games/search', 'GameController.search');

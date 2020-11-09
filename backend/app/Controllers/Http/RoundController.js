@@ -153,6 +153,15 @@ class RoundController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    const rounds = await Round.findOrFail(params.id)
+
+    const data = request.only([ "nome"])
+
+    rounds.merge(data)
+
+    await rounds.save()
+
+    return rounds
   }
 
   /**
