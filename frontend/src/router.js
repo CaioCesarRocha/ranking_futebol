@@ -119,6 +119,14 @@ const router = new Router({
                 title: "Editar Jogo",
             }
         },
+        {
+            path: '/showClubs',
+            name: 'showClubs',
+            component: () => import('./views/showClubs.vue'),
+            meta: {
+                title: "Escolha o Clube",
+            }
+        }
 
 
     ]

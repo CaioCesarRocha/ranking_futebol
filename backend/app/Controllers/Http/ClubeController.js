@@ -75,6 +75,39 @@ class ClubeController {
       }  
   }
 
+  async listClubes ({ request, response }){
+    const params = request.get()
+  
+    try{
+      const clubes = await Database
+        .from('clubes')
+        .orderBy('nome', 'desc')
+        .paginate(params.page, 20)
+  
+      return response.status(200).json(clubes)
+    }
+    catch(err){
+      return response.status(500).json({ message: 'Ocorreu um erro interno', description: err })
+    }    
+  }
+
+  async searchClubes({ request, response }) {
+    const search = request.get()
+
+    try{
+      const clubes = await Database
+        .from('clubes')
+        .orderBy('nome', 'desc')
+        .andWhere('nome', 'ILIKE', '%'+search.term+'%')
+        .paginate(search.page, 20)
+
+      return response.status(200).json(clubes)
+    }
+    catch(err){
+        return response.status(500).json({ message: 'Ocorreu um erro interno' })
+    }  
+  }
+
   /**
    * Render a form to be used for creating a new clube.
    * GET clubes/create
@@ -136,18 +169,7 @@ class ClubeController {
     where clubes.id = ${params.id}`)
 
     return nome.rows
-   // try{
-     // const clubes = await Database
-       // .only('nome')
-       // .from('clubes')
-      //  .where('id', params.id)
 
-     // return response.status(200).json(clubes)
- // }
-  //catch(err){
-     // return response.status(500).json({ message: 'Ocorreu um erro interno' })
-  //}  
-    
   }
 
   /**

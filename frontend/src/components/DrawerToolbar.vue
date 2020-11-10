@@ -155,7 +155,7 @@ export default {
         homeLink: '/',
         items: [
             { title: 'Camp Abertos', icon: 'mdi-soccer' },
-            { title: 'Histórico dos Clubes', icon: 'mdi-chart-line',link:'/consumoSetor' },
+            { title: 'Histórico dos Clubes', icon: 'mdi-chart-line',link:'/showClubs' },
             
         ],
         itemsAdmin: [

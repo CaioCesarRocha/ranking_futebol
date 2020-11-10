@@ -10,6 +10,18 @@ export default{
         }})
     },
 
+    list: (params) => { //--> lista o clubes na ShowCLubes
+        return api.get('listClubes', {params: {
+            page: params.page,
+        }})
+    },
+    searchClubes: (searchParams) => {  //--> lista o clube com a pesquisa na showCLubes
+        return api.get('clubes/searchClubes', { params: {
+            page: searchParams.page,
+            term: searchParams.searchText,
+        }})
+    },
+    
     store: (clube) => {
         return api.post('clubes', clube)
     },

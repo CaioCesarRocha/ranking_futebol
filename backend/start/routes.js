@@ -20,9 +20,11 @@ Route.get('/clubes', 'ClubeController.index');
 Route.post('/clubes', 'ClubeController.store');
 Route.get('/clubes/search', 'ClubeController.search');
 Route.get('/clubes/selectClubes', 'ClubeController.selectClubes');
-Route.get('/clubes/:id', 'ClubeController.show');
+Route.get('/clubes/:id', 'ClubeController.show'); //-> edit
 Route.get('/clubes/info/:id', 'ClubeController.info');
-Route.put('/clubes/:id', 'ClubeController.update')
+Route.put('/clubes/:id', 'ClubeController.update');
+Route.get('/listClubes','ClubeController.listClubes'); //-> list pra Showclubes
+Route.get('/clubes/searchClubes', 'ClubeController.searchClubes');
 
 Route.get('/leagues', 'LeagueController.index');
 Route.post('/leagues', 'LeagueController.store');
