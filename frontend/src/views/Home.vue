@@ -1,7 +1,13 @@
 <template>
 <div>
     <DrawerToolbar :routeName="$route.meta.title"/>
-</div>
+
+    <img             
+        class="responsive"
+        src="../assets/logo_home_rfOnline.jpg"
+    >        
+</div>                       
+
 </template>
 
 <script>
@@ -13,3 +19,11 @@ export default {
     }
 }
 </script>
+
+<style>
+.responsive{
+    width: auto;
+    height: auto;
+}
+
+</style>
